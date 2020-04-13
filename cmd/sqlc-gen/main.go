@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"text/template"
 	"unicode"
@@ -52,9 +53,10 @@ func isBuiltIn(typ string) bool {
 
 func (f Field) Convert() string {
 	switch {
-	case f.Name == "ExecPlan":
-		fmt.Println("ExecPlan", f.Type)
-		return "&ast.TODO{}"
+	case f.Name == "Base":
+		return "convertCreateStmt(&n.Base)"
+	case f.Name == "ValuesLists" && strings.HasPrefix(f.Type, "[][]"):
+		return fmt.Sprintf("convertValuesList(n.%s)", f.Name)
 	case f.Type == "interface{}":
 		return "&ast.TODO{}"
 	case isBuiltIn(f.Type):
@@ -110,7 +112,7 @@ import (
 	nodes "github.com/lfittl/pg_query_go/nodes"
 
 	"github.com/kyleconroy/sqlc/internal/sql/ast"
-	"github.com/kyleconroy/sqlc/cmd/sqlc-gen/pg"
+	"github.com/kyleconroy/sqlc/internal/sql/ast/pg"
 )
 
 func convertList(l nodes.List) *ast.List {
@@ -139,6 +141,9 @@ func convert(node nodes.Node) (ast.Node, error) {
 
 {{range .}}
 func convert{{.Name}}(n *nodes.{{.Name}}) *pg.{{.Name}} {
+	if n == nil {
+		return nil
+	}
 	return &pg.{{.Name}}{
 		{{- range .Fields}}
 		  {{.Name}}: {{.Convert}},
@@ -249,8 +254,9 @@ func main() {
 								Type: fieldType,
 							})
 						}
-						ctx.Structs = append(ctx.Structs, out)
 
+						sort.Slice(out.Fields, func(i, j int) bool { return out.Fields[i].Name < out.Fields[j].Name })
+						ctx.Structs = append(ctx.Structs, out)
 						if unicode.IsUpper(rune(out.Name[0])) {
 							cOut = append(cOut, out)
 						}
@@ -264,7 +270,8 @@ func main() {
 			if len(ctx.Structs) == 0 {
 				continue
 			}
-			f, err := os.Create(filepath.Join("pg", filepath.Base(name)))
+
+			f, err := os.Create(filepath.Join("../../internal/sql/ast/pg", filepath.Base(name)))
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -276,8 +283,9 @@ func main() {
 	}
 
 	// TODO: Sort cOut
+	sort.Slice(cOut, func(i, j int) bool { return cOut[i].Name < cOut[j].Name })
 
-	cf, err := os.Create(filepath.Join("convert", "convert.go"))
+	cf, err := os.Create("../../internal/postgresql/convert.go")
 	if err != nil {
 		log.Fatal(err)
 	}

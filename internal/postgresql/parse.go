@@ -168,7 +168,7 @@ func (p *Parser) Parse(r io.Reader) ([]ast.Statement, error) {
 		if !ok {
 			return nil, fmt.Errorf("expected RawStmt; got %T", stmt)
 		}
-		n, err := translate(raw.Stmt)
+		n, err := Translate(raw.Stmt)
 		if err == errSkip {
 			continue
 		}
@@ -185,7 +185,7 @@ func (p *Parser) Parse(r io.Reader) ([]ast.Statement, error) {
 	return stmts, nil
 }
 
-func translate(node nodes.Node) (ast.Node, error) {
+func Translate(node nodes.Node) (ast.Node, error) {
 	switch n := node.(type) {
 
 	case nodes.AlterEnumStmt:
@@ -523,6 +523,6 @@ func translate(node nodes.Node) (ast.Node, error) {
 		return nil, errSkip
 
 	default:
-		return nil, errSkip
+		return convert(n)
 	}
 }

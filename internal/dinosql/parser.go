@@ -16,6 +16,7 @@ import (
 	"github.com/kyleconroy/sqlc/internal/migrations"
 	core "github.com/kyleconroy/sqlc/internal/pg"
 	"github.com/kyleconroy/sqlc/internal/postgres"
+	"github.com/kyleconroy/sqlc/internal/postgresql"
 	"github.com/kyleconroy/sqlc/internal/postgresql/ast"
 
 	"github.com/davecgh/go-spew/spew"
@@ -117,6 +118,7 @@ func ParseCatalog(schemas []string) (core.Catalog, error) {
 				merr.Add(filename, contents, location(stmt), err)
 				continue
 			}
+			postgresql.Translate(stmt)
 		}
 	}
 
