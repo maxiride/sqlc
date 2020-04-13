@@ -5,11 +5,11 @@ import (
 )
 
 type DropStmt struct {
-	Behavior   DropBehavior
-	Concurrent bool
-	MissingOk  bool
 	Objects    *ast.List
 	RemoveType ObjectType
+	Behavior   DropBehavior
+	MissingOk  bool
+	Concurrent bool
 }
 
 func (n *DropStmt) Pos() int {

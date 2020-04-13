@@ -6,8 +6,8 @@ import (
 
 type WithClause struct {
 	Ctes      *ast.List
-	Location  int
 	Recursive bool
+	Location  int
 }
 
 func (n *WithClause) Pos() int {

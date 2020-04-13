@@ -5,13 +5,13 @@ import (
 )
 
 type MinMaxExpr struct {
-	Args         *ast.List
-	Inputcollid  Oid
-	Location     int
-	Minmaxcollid Oid
-	Minmaxtype   Oid
-	Op           MinMaxOp
 	Xpr          ast.Node
+	Minmaxtype   Oid
+	Minmaxcollid Oid
+	Inputcollid  Oid
+	Op           MinMaxOp
+	Args         *ast.List
+	Location     int
 }
 
 func (n *MinMaxExpr) Pos() int {

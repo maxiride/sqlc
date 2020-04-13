@@ -5,15 +5,15 @@ import (
 )
 
 type WindowClause struct {
-	CopiedOrder     bool
-	EndOffset       ast.Node
-	FrameOptions    int
 	Name            *string
-	OrderClause     *ast.List
-	PartitionClause *ast.List
 	Refname         *string
+	PartitionClause *ast.List
+	OrderClause     *ast.List
+	FrameOptions    int
 	StartOffset     ast.Node
+	EndOffset       ast.Node
 	Winref          Index
+	CopiedOrder     bool
 }
 
 func (n *WindowClause) Pos() int {

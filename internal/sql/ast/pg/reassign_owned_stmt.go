@@ -5,8 +5,8 @@ import (
 )
 
 type ReassignOwnedStmt struct {
-	Newrole *RoleSpec
 	Roles   *ast.List
+	Newrole *RoleSpec
 }
 
 func (n *ReassignOwnedStmt) Pos() int {

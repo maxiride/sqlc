@@ -5,11 +5,11 @@ import (
 )
 
 type CreateTableAsStmt struct {
-	IfNotExists  bool
-	Into         *IntoClause
-	IsSelectInto bool
 	Query        ast.Node
+	Into         *IntoClause
 	Relkind      ObjectType
+	IsSelectInto bool
+	IfNotExists  bool
 }
 
 func (n *CreateTableAsStmt) Pos() int {

@@ -5,9 +5,9 @@ import (
 )
 
 type CreateRoleStmt struct {
-	Options  *ast.List
-	Role     *string
 	StmtType RoleStmtType
+	Role     *string
+	Options  *ast.List
 }
 
 func (n *CreateRoleStmt) Pos() int {

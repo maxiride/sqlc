@@ -6,8 +6,8 @@ import (
 
 type TypeCast struct {
 	Arg      ast.Node
-	Location int
 	TypeName *TypeName
+	Location int
 }
 
 func (n *TypeCast) Pos() int {

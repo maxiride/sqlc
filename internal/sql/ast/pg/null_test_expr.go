@@ -5,11 +5,11 @@ import (
 )
 
 type NullTest struct {
+	Xpr          ast.Node
 	Arg          ast.Node
+	Nulltesttype NullTestType
 	Argisrow     bool
 	Location     int
-	Nulltesttype NullTestType
-	Xpr          ast.Node
 }
 
 func (n *NullTest) Pos() int {

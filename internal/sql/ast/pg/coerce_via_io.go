@@ -5,12 +5,12 @@ import (
 )
 
 type CoerceViaIO struct {
+	Xpr          ast.Node
 	Arg          ast.Node
+	Resulttype   Oid
+	Resultcollid Oid
 	Coerceformat CoercionForm
 	Location     int
-	Resultcollid Oid
-	Resulttype   Oid
-	Xpr          ast.Node
 }
 
 func (n *CoerceViaIO) Pos() int {

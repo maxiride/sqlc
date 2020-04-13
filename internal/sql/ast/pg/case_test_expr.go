@@ -5,10 +5,10 @@ import (
 )
 
 type CaseTestExpr struct {
-	Collation Oid
+	Xpr       ast.Node
 	TypeId    Oid
 	TypeMod   int32
-	Xpr       ast.Node
+	Collation Oid
 }
 
 func (n *CaseTestExpr) Pos() int {

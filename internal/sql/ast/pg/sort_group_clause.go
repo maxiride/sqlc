@@ -1,11 +1,11 @@
 package pg
 
 type SortGroupClause struct {
-	Eqop            Oid
-	Hashable        bool
-	NullsFirst      bool
-	Sortop          Oid
 	TleSortGroupRef Index
+	Eqop            Oid
+	Sortop          Oid
+	NullsFirst      bool
+	Hashable        bool
 }
 
 func (n *SortGroupClause) Pos() int {

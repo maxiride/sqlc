@@ -5,11 +5,11 @@ import (
 )
 
 type ConvertRowtypeExpr struct {
+	Xpr           ast.Node
 	Arg           ast.Node
+	Resulttype    Oid
 	Convertformat CoercionForm
 	Location      int
-	Resulttype    Oid
-	Xpr           ast.Node
 }
 
 func (n *ConvertRowtypeExpr) Pos() int {

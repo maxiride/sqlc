@@ -5,10 +5,10 @@ import (
 )
 
 type CreateEventTrigStmt struct {
-	Eventname  *string
-	Funcname   *ast.List
 	Trigname   *string
+	Eventname  *string
 	Whenclause *ast.List
+	Funcname   *ast.List
 }
 
 func (n *CreateEventTrigStmt) Pos() int {

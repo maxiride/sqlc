@@ -5,10 +5,10 @@ import (
 )
 
 type AlterObjectDependsStmt struct {
-	Extname    ast.Node
-	Object     ast.Node
 	ObjectType ObjectType
 	Relation   *RangeVar
+	Object     ast.Node
+	Extname    ast.Node
 }
 
 func (n *AlterObjectDependsStmt) Pos() int {

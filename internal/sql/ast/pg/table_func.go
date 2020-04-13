@@ -5,19 +5,19 @@ import (
 )
 
 type TableFunc struct {
-	Colcollations *ast.List
-	Coldefexprs   *ast.List
-	Colexprs      *ast.List
+	NsUris        *ast.List
+	NsNames       *ast.List
+	Docexpr       ast.Node
+	Rowexpr       ast.Node
 	Colnames      *ast.List
 	Coltypes      *ast.List
 	Coltypmods    *ast.List
-	Docexpr       ast.Node
-	Location      int
+	Colcollations *ast.List
+	Colexprs      *ast.List
+	Coldefexprs   *ast.List
 	Notnulls      []uint32
-	NsNames       *ast.List
-	NsUris        *ast.List
 	Ordinalitycol int
-	Rowexpr       ast.Node
+	Location      int
 }
 
 func (n *TableFunc) Pos() int {

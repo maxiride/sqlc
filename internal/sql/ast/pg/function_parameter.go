@@ -5,10 +5,10 @@ import (
 )
 
 type FunctionParameter struct {
-	ArgType *TypeName
-	Defexpr ast.Node
-	Mode    FunctionParameterMode
 	Name    *string
+	ArgType *TypeName
+	Mode    FunctionParameterMode
+	Defexpr ast.Node
 }
 
 func (n *FunctionParameter) Pos() int {

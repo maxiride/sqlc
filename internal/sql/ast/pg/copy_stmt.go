@@ -5,13 +5,13 @@ import (
 )
 
 type CopyStmt struct {
+	Relation  *RangeVar
+	Query     ast.Node
 	Attlist   *ast.List
-	Filename  *string
 	IsFrom    bool
 	IsProgram bool
+	Filename  *string
 	Options   *ast.List
-	Query     ast.Node
-	Relation  *RangeVar
 }
 
 func (n *CopyStmt) Pos() int {

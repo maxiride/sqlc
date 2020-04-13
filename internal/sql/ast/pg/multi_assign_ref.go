@@ -5,9 +5,9 @@ import (
 )
 
 type MultiAssignRef struct {
+	Source   ast.Node
 	Colno    int
 	Ncolumns int
-	Source   ast.Node
 }
 
 func (n *MultiAssignRef) Pos() int {

@@ -5,10 +5,10 @@ import (
 )
 
 type CreateUserMappingStmt struct {
+	User        *RoleSpec
+	Servername  *string
 	IfNotExists bool
 	Options     *ast.List
-	Servername  *string
-	User        *RoleSpec
 }
 
 func (n *CreateUserMappingStmt) Pos() int {

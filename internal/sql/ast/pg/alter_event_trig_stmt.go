@@ -1,8 +1,8 @@
 package pg
 
 type AlterEventTrigStmt struct {
-	Tgenabled byte
 	Trigname  *string
+	Tgenabled byte
 }
 
 func (n *AlterEventTrigStmt) Pos() int {

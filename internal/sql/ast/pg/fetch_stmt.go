@@ -3,8 +3,8 @@ package pg
 type FetchStmt struct {
 	Direction  FetchDirection
 	HowMany    int64
-	Ismove     bool
 	Portalname *string
+	Ismove     bool
 }
 
 func (n *FetchStmt) Pos() int {

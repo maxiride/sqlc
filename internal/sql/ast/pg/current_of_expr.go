@@ -5,10 +5,10 @@ import (
 )
 
 type CurrentOfExpr struct {
+	Xpr         ast.Node
+	Cvarno      Index
 	CursorName  *string
 	CursorParam int
-	Cvarno      Index
-	Xpr         ast.Node
 }
 
 func (n *CurrentOfExpr) Pos() int {

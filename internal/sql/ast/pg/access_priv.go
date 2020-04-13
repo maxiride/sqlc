@@ -5,8 +5,8 @@ import (
 )
 
 type AccessPriv struct {
-	Cols     *ast.List
 	PrivName *string
+	Cols     *ast.List
 }
 
 func (n *AccessPriv) Pos() int {

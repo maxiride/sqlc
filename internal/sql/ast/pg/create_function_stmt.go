@@ -5,11 +5,11 @@ import (
 )
 
 type CreateFunctionStmt struct {
-	Funcname   *ast.List
-	Options    *ast.List
-	Parameters *ast.List
 	Replace    bool
+	Funcname   *ast.List
+	Parameters *ast.List
 	ReturnType *TypeName
+	Options    *ast.List
 	WithClause *ast.List
 }
 

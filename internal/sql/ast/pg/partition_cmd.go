@@ -1,8 +1,8 @@
 package pg
 
 type PartitionCmd struct {
-	Bound *PartitionBoundSpec
 	Name  *RangeVar
+	Bound *PartitionBoundSpec
 }
 
 func (n *PartitionCmd) Pos() int {

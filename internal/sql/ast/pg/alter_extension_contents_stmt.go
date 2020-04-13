@@ -5,10 +5,10 @@ import (
 )
 
 type AlterExtensionContentsStmt struct {
-	Action  int
 	Extname *string
-	Object  ast.Node
+	Action  int
 	Objtype ObjectType
+	Object  ast.Node
 }
 
 func (n *AlterExtensionContentsStmt) Pos() int {

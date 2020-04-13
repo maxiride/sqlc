@@ -5,13 +5,13 @@ import (
 )
 
 type RangeTableFunc struct {
-	Alias      *Alias
-	Columns    *ast.List
-	Docexpr    ast.Node
 	Lateral    bool
-	Location   int
-	Namespaces *ast.List
+	Docexpr    ast.Node
 	Rowexpr    ast.Node
+	Namespaces *ast.List
+	Columns    *ast.List
+	Alias      *Alias
+	Location   int
 }
 
 func (n *RangeTableFunc) Pos() int {

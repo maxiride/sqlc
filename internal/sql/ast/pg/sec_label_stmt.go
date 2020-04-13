@@ -5,10 +5,10 @@ import (
 )
 
 type SecLabelStmt struct {
-	Label    *string
-	Object   ast.Node
 	Objtype  ObjectType
+	Object   ast.Node
 	Provider *string
+	Label    *string
 }
 
 func (n *SecLabelStmt) Pos() int {

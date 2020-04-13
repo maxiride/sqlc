@@ -5,25 +5,25 @@ import (
 )
 
 type IndexStmt struct {
+	Idxname        *string
+	Relation       *RangeVar
 	AccessMethod   *string
-	Concurrent     bool
-	Deferrable     bool
+	TableSpace     *string
+	IndexParams    *ast.List
+	Options        *ast.List
+	WhereClause    ast.Node
 	ExcludeOpNames *ast.List
 	Idxcomment     *string
-	Idxname        *string
-	IfNotExists    bool
 	IndexOid       Oid
-	IndexParams    *ast.List
-	Initdeferred   bool
-	Isconstraint   bool
 	OldNode        Oid
-	Options        *ast.List
-	Primary        bool
-	Relation       *RangeVar
-	TableSpace     *string
-	Transformed    bool
 	Unique         bool
-	WhereClause    ast.Node
+	Primary        bool
+	Isconstraint   bool
+	Deferrable     bool
+	Initdeferred   bool
+	Transformed    bool
+	Concurrent     bool
+	IfNotExists    bool
 }
 
 func (n *IndexStmt) Pos() int {

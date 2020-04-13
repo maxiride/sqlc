@@ -5,15 +5,15 @@ import (
 )
 
 type ArrayCoerceExpr struct {
+	Xpr          ast.Node
 	Arg          ast.Node
-	Coerceformat CoercionForm
 	Elemfuncid   Oid
-	IsExplicit   bool
-	Location     int
-	Resultcollid Oid
 	Resulttype   Oid
 	Resulttypmod int32
-	Xpr          ast.Node
+	Resultcollid Oid
+	IsExplicit   bool
+	Coerceformat CoercionForm
+	Location     int
 }
 
 func (n *ArrayCoerceExpr) Pos() int {

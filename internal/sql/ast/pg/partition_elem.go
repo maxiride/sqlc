@@ -5,11 +5,11 @@ import (
 )
 
 type PartitionElem struct {
-	Collation *ast.List
-	Expr      ast.Node
-	Location  int
 	Name      *string
+	Expr      ast.Node
+	Collation *ast.List
 	Opclass   *ast.List
+	Location  int
 }
 
 func (n *PartitionElem) Pos() int {

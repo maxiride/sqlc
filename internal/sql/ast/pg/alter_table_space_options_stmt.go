@@ -5,9 +5,9 @@ import (
 )
 
 type AlterTableSpaceOptionsStmt struct {
-	IsReset        bool
-	Options        *ast.List
 	Tablespacename *string
+	Options        *ast.List
+	IsReset        bool
 }
 
 func (n *AlterTableSpaceOptionsStmt) Pos() int {

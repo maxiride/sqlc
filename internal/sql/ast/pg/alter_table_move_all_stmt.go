@@ -5,11 +5,11 @@ import (
 )
 
 type AlterTableMoveAllStmt struct {
+	OrigTablespacename *string
+	Objtype            ObjectType
+	Roles              *ast.List
 	NewTablespacename  *string
 	Nowait             bool
-	Objtype            ObjectType
-	OrigTablespacename *string
-	Roles              *ast.List
 }
 
 func (n *AlterTableMoveAllStmt) Pos() int {

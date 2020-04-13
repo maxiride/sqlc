@@ -5,13 +5,13 @@ import (
 )
 
 type RangeTableFuncCol struct {
-	Coldefexpr    ast.Node
-	Colexpr       ast.Node
 	Colname       *string
+	TypeName      *TypeName
 	ForOrdinality bool
 	IsNotNull     bool
+	Colexpr       ast.Node
+	Coldefexpr    ast.Node
 	Location      int
-	TypeName      *TypeName
 }
 
 func (n *RangeTableFuncCol) Pos() int {

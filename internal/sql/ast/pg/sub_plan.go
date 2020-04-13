@@ -5,23 +5,23 @@ import (
 )
 
 type SubPlan struct {
-	Args              *ast.List
-	FirstColCollation Oid
-	FirstColType      Oid
-	FirstColTypmod    int32
-	ParParam          *ast.List
-	ParallelSafe      bool
-	ParamIds          *ast.List
-	PerCallCost       Cost
-	PlanId            int
-	PlanName          *string
-	SetParam          *ast.List
-	StartupCost       Cost
+	Xpr               ast.Node
 	SubLinkType       SubLinkType
 	Testexpr          ast.Node
-	UnknownEqFalse    bool
+	ParamIds          *ast.List
+	PlanId            int
+	PlanName          *string
+	FirstColType      Oid
+	FirstColTypmod    int32
+	FirstColCollation Oid
 	UseHashTable      bool
-	Xpr               ast.Node
+	UnknownEqFalse    bool
+	ParallelSafe      bool
+	SetParam          *ast.List
+	ParParam          *ast.List
+	Args              *ast.List
+	StartupCost       Cost
+	PerCallCost       Cost
 }
 
 func (n *SubPlan) Pos() int {

@@ -5,14 +5,14 @@ import (
 )
 
 type TargetEntry struct {
-	Expr            ast.Node
-	Resjunk         bool
-	Resname         *string
-	Resno           AttrNumber
-	Resorigcol      AttrNumber
-	Resorigtbl      Oid
-	Ressortgroupref Index
 	Xpr             ast.Node
+	Expr            ast.Node
+	Resno           AttrNumber
+	Resname         *string
+	Ressortgroupref Index
+	Resorigtbl      Oid
+	Resorigcol      AttrNumber
+	Resjunk         bool
 }
 
 func (n *TargetEntry) Pos() int {

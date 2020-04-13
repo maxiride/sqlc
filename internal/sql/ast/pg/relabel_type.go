@@ -5,13 +5,13 @@ import (
 )
 
 type RelabelType struct {
+	Xpr           ast.Node
 	Arg           ast.Node
-	Location      int
-	Relabelformat CoercionForm
-	Resultcollid  Oid
 	Resulttype    Oid
 	Resulttypmod  int32
-	Xpr           ast.Node
+	Resultcollid  Oid
+	Relabelformat CoercionForm
+	Location      int
 }
 
 func (n *RelabelType) Pos() int {

@@ -5,10 +5,10 @@ import (
 )
 
 type CollateExpr struct {
+	Xpr      ast.Node
 	Arg      ast.Node
 	CollOid  Oid
 	Location int
-	Xpr      ast.Node
 }
 
 func (n *CollateExpr) Pos() int {

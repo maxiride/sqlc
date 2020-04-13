@@ -5,10 +5,10 @@ import (
 )
 
 type XmlSerialize struct {
-	Expr      ast.Node
-	Location  int
-	TypeName  *TypeName
 	Xmloption XmlOptionType
+	Expr      ast.Node
+	TypeName  *TypeName
+	Location  int
 }
 
 func (n *XmlSerialize) Pos() int {

@@ -5,14 +5,14 @@ import (
 )
 
 type TypeName struct {
+	Names       *ast.List
+	TypeOid     Oid
+	Setof       bool
+	PctType     bool
+	Typmods     *ast.List
+	Typemod     int32
 	ArrayBounds *ast.List
 	Location    int
-	Names       *ast.List
-	PctType     bool
-	Setof       bool
-	TypeOid     Oid
-	Typemod     int32
-	Typmods     *ast.List
 }
 
 func (n *TypeName) Pos() int {

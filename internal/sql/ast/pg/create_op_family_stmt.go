@@ -5,8 +5,8 @@ import (
 )
 
 type CreateOpFamilyStmt struct {
-	Amname       *string
 	Opfamilyname *ast.List
+	Amname       *string
 }
 
 func (n *CreateOpFamilyStmt) Pos() int {

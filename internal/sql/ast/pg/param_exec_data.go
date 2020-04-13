@@ -2,8 +2,8 @@ package pg
 
 type ParamExecData struct {
 	ExecPlan interface{}
-	Isnull   bool
 	Value    Datum
+	Isnull   bool
 }
 
 func (n *ParamExecData) Pos() int {

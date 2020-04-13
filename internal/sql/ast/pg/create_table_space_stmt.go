@@ -5,10 +5,10 @@ import (
 )
 
 type CreateTableSpaceStmt struct {
+	Tablespacename *string
+	Owner          *RoleSpec
 	Location       *string
 	Options        *ast.List
-	Owner          *RoleSpec
-	Tablespacename *string
 }
 
 func (n *CreateTableSpaceStmt) Pos() int {

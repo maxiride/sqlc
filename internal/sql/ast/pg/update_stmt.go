@@ -5,11 +5,11 @@ import (
 )
 
 type UpdateStmt struct {
-	FromClause    *ast.List
 	Relation      *RangeVar
-	ReturningList *ast.List
 	TargetList    *ast.List
 	WhereClause   ast.Node
+	FromClause    *ast.List
+	ReturningList *ast.List
 	WithClause    *WithClause
 }
 

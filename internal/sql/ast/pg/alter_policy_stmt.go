@@ -6,9 +6,9 @@ import (
 
 type AlterPolicyStmt struct {
 	PolicyName *string
-	Qual       ast.Node
-	Roles      *ast.List
 	Table      *RangeVar
+	Roles      *ast.List
+	Qual       ast.Node
 	WithCheck  ast.Node
 }
 

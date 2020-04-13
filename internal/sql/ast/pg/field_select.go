@@ -5,12 +5,12 @@ import (
 )
 
 type FieldSelect struct {
+	Xpr          ast.Node
 	Arg          ast.Node
 	Fieldnum     AttrNumber
-	Resultcollid Oid
 	Resulttype   Oid
 	Resulttypmod int32
-	Xpr          ast.Node
+	Resultcollid Oid
 }
 
 func (n *FieldSelect) Pos() int {

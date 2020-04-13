@@ -5,9 +5,9 @@ import (
 )
 
 type TruncateStmt struct {
-	Behavior    DropBehavior
 	Relations   *ast.List
 	RestartSeqs bool
+	Behavior    DropBehavior
 }
 
 func (n *TruncateStmt) Pos() int {

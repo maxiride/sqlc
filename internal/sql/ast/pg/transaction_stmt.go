@@ -5,9 +5,9 @@ import (
 )
 
 type TransactionStmt struct {
-	Gid     *string
 	Kind    TransactionStmtKind
 	Options *ast.List
+	Gid     *string
 }
 
 func (n *TransactionStmt) Pos() int {

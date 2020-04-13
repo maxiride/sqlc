@@ -5,24 +5,24 @@ import (
 )
 
 type Aggref struct {
-	Aggargtypes   *ast.List
+	Xpr           ast.Node
+	Aggfnoid      Oid
+	Aggtype       Oid
 	Aggcollid     Oid
+	Inputcollid   Oid
+	Aggtranstype  Oid
+	Aggargtypes   *ast.List
 	Aggdirectargs *ast.List
+	Args          *ast.List
+	Aggorder      *ast.List
 	Aggdistinct   *ast.List
 	Aggfilter     ast.Node
-	Aggfnoid      Oid
+	Aggstar       bool
+	Aggvariadic   bool
 	Aggkind       byte
 	Agglevelsup   Index
-	Aggorder      *ast.List
 	Aggsplit      AggSplit
-	Aggstar       bool
-	Aggtranstype  Oid
-	Aggtype       Oid
-	Aggvariadic   bool
-	Args          *ast.List
-	Inputcollid   Oid
 	Location      int
-	Xpr           ast.Node
 }
 
 func (n *Aggref) Pos() int {

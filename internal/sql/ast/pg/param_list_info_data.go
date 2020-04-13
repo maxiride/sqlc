@@ -1,10 +1,10 @@
 package pg
 
 type ParamListInfoData struct {
-	NumParams      int
 	ParamFetchArg  interface{}
-	ParamMask      []uint32
 	ParserSetupArg interface{}
+	NumParams      int
+	ParamMask      []uint32
 }
 
 func (n *ParamListInfoData) Pos() int {

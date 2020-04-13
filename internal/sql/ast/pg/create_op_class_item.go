@@ -5,11 +5,11 @@ import (
 )
 
 type CreateOpClassItem struct {
-	ClassArgs   *ast.List
 	Itemtype    int
 	Name        *ObjectWithArgs
 	Number      int
 	OrderFamily *ast.List
+	ClassArgs   *ast.List
 	Storedtype  *TypeName
 }
 

@@ -5,12 +5,12 @@ import (
 )
 
 type RowExpr struct {
+	Xpr       ast.Node
 	Args      *ast.List
+	RowTypeid Oid
+	RowFormat CoercionForm
 	Colnames  *ast.List
 	Location  int
-	RowFormat CoercionForm
-	RowTypeid Oid
-	Xpr       ast.Node
 }
 
 func (n *RowExpr) Pos() int {

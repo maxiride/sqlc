@@ -5,12 +5,12 @@ import (
 )
 
 type AlterDomainStmt struct {
-	Behavior  DropBehavior
-	Def       ast.Node
-	MissingOk bool
-	Name      *string
 	Subtype   byte
 	TypeName  *ast.List
+	Name      *string
+	Def       ast.Node
+	Behavior  DropBehavior
+	MissingOk bool
 }
 
 func (n *AlterDomainStmt) Pos() int {

@@ -5,10 +5,10 @@ import (
 )
 
 type ResTarget struct {
-	Indirection *ast.List
-	Location    int
 	Name        *string
+	Indirection *ast.List
 	Val         ast.Node
+	Location    int
 }
 
 func (n *ResTarget) Pos() int {

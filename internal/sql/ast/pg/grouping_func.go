@@ -5,12 +5,12 @@ import (
 )
 
 type GroupingFunc struct {
-	Agglevelsup Index
-	Args        *ast.List
-	Cols        *ast.List
-	Location    int
-	Refs        *ast.List
 	Xpr         ast.Node
+	Args        *ast.List
+	Refs        *ast.List
+	Cols        *ast.List
+	Agglevelsup Index
+	Location    int
 }
 
 func (n *GroupingFunc) Pos() int {

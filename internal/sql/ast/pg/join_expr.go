@@ -5,14 +5,14 @@ import (
 )
 
 type JoinExpr struct {
-	Alias       *Alias
-	IsNatural   bool
 	Jointype    JoinType
+	IsNatural   bool
 	Larg        ast.Node
-	Quals       ast.Node
 	Rarg        ast.Node
-	Rtindex     int
 	UsingClause *ast.List
+	Quals       ast.Node
+	Alias       *Alias
+	Rtindex     int
 }
 
 func (n *JoinExpr) Pos() int {

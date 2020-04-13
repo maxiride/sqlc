@@ -5,15 +5,15 @@ import (
 )
 
 type Const struct {
-	Constbyval  bool
-	Constcollid Oid
-	Constisnull bool
-	Constlen    int
+	Xpr         ast.Node
 	Consttype   Oid
 	Consttypmod int32
+	Constcollid Oid
+	Constlen    int
 	Constvalue  Datum
+	Constisnull bool
+	Constbyval  bool
 	Location    int
-	Xpr         ast.Node
 }
 
 func (n *Const) Pos() int {

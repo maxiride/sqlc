@@ -5,12 +5,12 @@ import (
 )
 
 type CreateForeignServerStmt struct {
-	Fdwname     *string
-	IfNotExists bool
-	Options     *ast.List
 	Servername  *string
 	Servertype  *string
 	Version     *string
+	Fdwname     *string
+	IfNotExists bool
+	Options     *ast.List
 }
 
 func (n *CreateForeignServerStmt) Pos() int {

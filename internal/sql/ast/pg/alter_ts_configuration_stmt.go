@@ -5,13 +5,13 @@ import (
 )
 
 type AlterTSConfigurationStmt struct {
-	Cfgname   *ast.List
-	Dicts     *ast.List
 	Kind      AlterTSConfigType
-	MissingOk bool
+	Cfgname   *ast.List
+	Tokentype *ast.List
+	Dicts     *ast.List
 	Override  bool
 	Replace   bool
-	Tokentype *ast.List
+	MissingOk bool
 }
 
 func (n *AlterTSConfigurationStmt) Pos() int {

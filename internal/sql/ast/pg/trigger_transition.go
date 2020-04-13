@@ -1,9 +1,9 @@
 package pg
 
 type TriggerTransition struct {
+	Name    *string
 	IsNew   bool
 	IsTable bool
-	Name    *string
 }
 
 func (n *TriggerTransition) Pos() int {

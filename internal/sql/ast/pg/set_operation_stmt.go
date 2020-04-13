@@ -5,14 +5,14 @@ import (
 )
 
 type SetOperationStmt struct {
+	Op            SetOperation
 	All           bool
-	ColCollations *ast.List
+	Larg          ast.Node
+	Rarg          ast.Node
 	ColTypes      *ast.List
 	ColTypmods    *ast.List
+	ColCollations *ast.List
 	GroupClauses  *ast.List
-	Larg          ast.Node
-	Op            SetOperation
-	Rarg          ast.Node
 }
 
 func (n *SetOperationStmt) Pos() int {

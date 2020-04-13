@@ -5,10 +5,10 @@ import (
 )
 
 type AlterOwnerStmt struct {
-	Newowner   *RoleSpec
-	Object     ast.Node
 	ObjectType ObjectType
 	Relation   *RangeVar
+	Object     ast.Node
+	Newowner   *RoleSpec
 }
 
 func (n *AlterOwnerStmt) Pos() int {

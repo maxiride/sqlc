@@ -2,8 +2,8 @@ package pg
 
 type RefreshMatViewStmt struct {
 	Concurrent bool
-	Relation   *RangeVar
 	SkipData   bool
+	Relation   *RangeVar
 }
 
 func (n *RefreshMatViewStmt) Pos() int {

@@ -5,16 +5,16 @@ import (
 )
 
 type Var struct {
-	Location    int
-	Varattno    AttrNumber
-	Varcollid   Oid
-	Varlevelsup Index
+	Xpr         ast.Node
 	Varno       Index
-	Varnoold    Index
-	Varoattno   AttrNumber
+	Varattno    AttrNumber
 	Vartype     Oid
 	Vartypmod   int32
-	Xpr         ast.Node
+	Varcollid   Oid
+	Varlevelsup Index
+	Varnoold    Index
+	Varoattno   AttrNumber
+	Location    int
 }
 
 func (n *Var) Pos() int {

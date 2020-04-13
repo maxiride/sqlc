@@ -5,11 +5,11 @@ import (
 )
 
 type RangeTableSample struct {
-	Args       *ast.List
-	Location   int
-	Method     *ast.List
 	Relation   ast.Node
+	Method     *ast.List
+	Args       *ast.List
 	Repeatable ast.Node
+	Location   int
 }
 
 func (n *RangeTableSample) Pos() int {

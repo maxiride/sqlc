@@ -1,8 +1,8 @@
 package pg
 
 type ParamRef struct {
-	Location int
 	Number   int
+	Location int
 }
 
 func (n *ParamRef) Pos() int {

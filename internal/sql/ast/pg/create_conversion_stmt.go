@@ -6,10 +6,10 @@ import (
 
 type CreateConversionStmt struct {
 	ConversionName  *ast.List
-	Def             bool
 	ForEncodingName *string
-	FuncName        *ast.List
 	ToEncodingName  *string
+	FuncName        *ast.List
+	Def             bool
 }
 
 func (n *CreateConversionStmt) Pos() int {

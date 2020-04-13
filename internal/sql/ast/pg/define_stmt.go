@@ -5,12 +5,12 @@ import (
 )
 
 type DefineStmt struct {
-	Args        *ast.List
-	Definition  *ast.List
-	Defnames    *ast.List
-	IfNotExists bool
 	Kind        ObjectType
 	Oldstyle    bool
+	Defnames    *ast.List
+	Args        *ast.List
+	Definition  *ast.List
+	IfNotExists bool
 }
 
 func (n *DefineStmt) Pos() int {

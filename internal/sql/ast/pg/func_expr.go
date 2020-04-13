@@ -5,16 +5,16 @@ import (
 )
 
 type FuncExpr struct {
-	Args           *ast.List
-	Funccollid     Oid
-	Funcformat     CoercionForm
+	Xpr            ast.Node
 	Funcid         Oid
 	Funcresulttype Oid
 	Funcretset     bool
 	Funcvariadic   bool
+	Funcformat     CoercionForm
+	Funccollid     Oid
 	Inputcollid    Oid
+	Args           *ast.List
 	Location       int
-	Xpr            ast.Node
 }
 
 func (n *FuncExpr) Pos() int {

@@ -5,22 +5,22 @@ import (
 )
 
 type ColumnDef struct {
-	CollClause    *CollateClause
-	CollOid       Oid
 	Colname       *string
-	Constraints   *ast.List
-	CookedDefault ast.Node
-	Fdwoptions    *ast.List
-	Identity      byte
+	TypeName      *TypeName
 	Inhcount      int
-	IsFromParent  bool
-	IsFromType    bool
 	IsLocal       bool
 	IsNotNull     bool
-	Location      int
-	RawDefault    ast.Node
+	IsFromType    bool
+	IsFromParent  bool
 	Storage       byte
-	TypeName      *TypeName
+	RawDefault    ast.Node
+	CookedDefault ast.Node
+	Identity      byte
+	CollClause    *CollateClause
+	CollOid       Oid
+	Constraints   *ast.List
+	Fdwoptions    *ast.List
+	Location      int
 }
 
 func (n *ColumnDef) Pos() int {

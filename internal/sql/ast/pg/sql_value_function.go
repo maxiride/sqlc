@@ -5,11 +5,11 @@ import (
 )
 
 type SQLValueFunction struct {
-	Location int
+	Xpr      ast.Node
 	Op       SQLValueFunctionOp
 	Type     Oid
 	Typmod   int32
-	Xpr      ast.Node
+	Location int
 }
 
 func (n *SQLValueFunction) Pos() int {

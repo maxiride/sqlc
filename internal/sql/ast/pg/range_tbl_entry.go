@@ -5,37 +5,37 @@ import (
 )
 
 type RangeTblEntry struct {
-	Alias           *Alias
-	CheckAsUser     Oid
-	Colcollations   *ast.List
-	Coltypes        *ast.List
-	Coltypmods      *ast.List
-	Ctelevelsup     Index
-	Ctename         *string
-	Enrname         *string
-	Enrtuples       float64
-	Eref            *Alias
-	Funcordinality  bool
-	Functions       *ast.List
-	InFromCl        bool
-	Inh             bool
-	InsertedCols    []uint32
-	Joinaliasvars   *ast.List
-	Jointype        JoinType
-	Lateral         bool
+	Rtekind         RTEKind
 	Relid           Oid
 	Relkind         byte
-	RequiredPerms   AclMode
-	Rtekind         RTEKind
-	SecurityBarrier bool
-	SecurityQuals   *ast.List
-	SelectedCols    []uint32
-	SelfReference   bool
-	Subquery        *Query
-	Tablefunc       *TableFunc
 	Tablesample     *TableSampleClause
-	UpdatedCols     []uint32
+	Subquery        *Query
+	SecurityBarrier bool
+	Jointype        JoinType
+	Joinaliasvars   *ast.List
+	Functions       *ast.List
+	Funcordinality  bool
+	Tablefunc       *TableFunc
 	ValuesLists     *ast.List
+	Ctename         *string
+	Ctelevelsup     Index
+	SelfReference   bool
+	Coltypes        *ast.List
+	Coltypmods      *ast.List
+	Colcollations   *ast.List
+	Enrname         *string
+	Enrtuples       float64
+	Alias           *Alias
+	Eref            *Alias
+	Lateral         bool
+	Inh             bool
+	InFromCl        bool
+	RequiredPerms   AclMode
+	CheckAsUser     Oid
+	SelectedCols    []uint32
+	InsertedCols    []uint32
+	UpdatedCols     []uint32
+	SecurityQuals   *ast.List
 }
 
 func (n *RangeTblEntry) Pos() int {

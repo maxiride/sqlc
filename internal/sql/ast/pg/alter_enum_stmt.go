@@ -5,12 +5,12 @@ import (
 )
 
 type AlterEnumStmt struct {
-	NewVal             *string
-	NewValIsAfter      bool
-	NewValNeighbor     *string
-	OldVal             *string
-	SkipIfNewValExists bool
 	TypeName           *ast.List
+	OldVal             *string
+	NewVal             *string
+	NewValNeighbor     *string
+	NewValIsAfter      bool
+	SkipIfNewValExists bool
 }
 
 func (n *AlterEnumStmt) Pos() int {

@@ -5,10 +5,10 @@ import (
 )
 
 type CaseWhen struct {
-	Expr     ast.Node
-	Location int
-	Result   ast.Node
 	Xpr      ast.Node
+	Expr     ast.Node
+	Result   ast.Node
+	Location int
 }
 
 func (n *CaseWhen) Pos() int {

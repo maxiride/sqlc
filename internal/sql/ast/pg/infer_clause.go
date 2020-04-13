@@ -5,10 +5,10 @@ import (
 )
 
 type InferClause struct {
-	Conname     *string
 	IndexElems  *ast.List
-	Location    int
 	WhereClause ast.Node
+	Conname     *string
+	Location    int
 }
 
 func (n *InferClause) Pos() int {

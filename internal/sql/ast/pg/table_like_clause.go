@@ -1,8 +1,8 @@
 package pg
 
 type TableLikeClause struct {
-	Options  uint32
 	Relation *RangeVar
+	Options  uint32
 }
 
 func (n *TableLikeClause) Pos() int {

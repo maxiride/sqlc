@@ -1,9 +1,9 @@
 package pg
 
 type InlineCodeBlock struct {
-	LangIsTrusted bool
-	LangOid       Oid
 	SourceText    *string
+	LangOid       Oid
+	LangIsTrusted bool
 }
 
 func (n *InlineCodeBlock) Pos() int {

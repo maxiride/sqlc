@@ -1,9 +1,9 @@
 package pg
 
 type DropSubscriptionStmt struct {
-	Behavior  DropBehavior
-	MissingOk bool
 	Subname   *string
+	MissingOk bool
+	Behavior  DropBehavior
 }
 
 func (n *DropSubscriptionStmt) Pos() int {

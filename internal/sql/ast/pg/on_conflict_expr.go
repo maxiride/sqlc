@@ -9,10 +9,10 @@ type OnConflictExpr struct {
 	ArbiterElems    *ast.List
 	ArbiterWhere    ast.Node
 	Constraint      Oid
-	ExclRelIndex    int
-	ExclRelTlist    *ast.List
 	OnConflictSet   *ast.List
 	OnConflictWhere ast.Node
+	ExclRelIndex    int
+	ExclRelTlist    *ast.List
 }
 
 func (n *OnConflictExpr) Pos() int {

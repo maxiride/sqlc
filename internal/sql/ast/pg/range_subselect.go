@@ -5,9 +5,9 @@ import (
 )
 
 type RangeSubselect struct {
-	Alias    *Alias
 	Lateral  bool
 	Subquery ast.Node
+	Alias    *Alias
 }
 
 func (n *RangeSubselect) Pos() int {

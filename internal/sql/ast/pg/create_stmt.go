@@ -5,17 +5,17 @@ import (
 )
 
 type CreateStmt struct {
-	Constraints    *ast.List
-	IfNotExists    bool
-	InhRelations   *ast.List
-	OfTypename     *TypeName
-	Oncommit       OnCommitAction
-	Options        *ast.List
-	Partbound      *PartitionBoundSpec
-	Partspec       *PartitionSpec
 	Relation       *RangeVar
 	TableElts      *ast.List
+	InhRelations   *ast.List
+	Partbound      *PartitionBoundSpec
+	Partspec       *PartitionSpec
+	OfTypename     *TypeName
+	Constraints    *ast.List
+	Options        *ast.List
+	Oncommit       OnCommitAction
 	Tablespacename *string
+	IfNotExists    bool
 }
 
 func (n *CreateStmt) Pos() int {

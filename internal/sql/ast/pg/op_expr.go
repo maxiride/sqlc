@@ -5,15 +5,15 @@ import (
 )
 
 type OpExpr struct {
-	Args         *ast.List
-	Inputcollid  Oid
-	Location     int
-	Opcollid     Oid
-	Opfuncid     Oid
+	Xpr          ast.Node
 	Opno         Oid
+	Opfuncid     Oid
 	Opresulttype Oid
 	Opretset     bool
-	Xpr          ast.Node
+	Opcollid     Oid
+	Inputcollid  Oid
+	Args         *ast.List
+	Location     int
 }
 
 func (n *OpExpr) Pos() int {

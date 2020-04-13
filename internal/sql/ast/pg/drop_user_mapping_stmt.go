@@ -1,9 +1,9 @@
 package pg
 
 type DropUserMappingStmt struct {
-	MissingOk  bool
-	Servername *string
 	User       *RoleSpec
+	Servername *string
+	MissingOk  bool
 }
 
 func (n *DropUserMappingStmt) Pos() int {

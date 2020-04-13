@@ -5,11 +5,11 @@ import (
 )
 
 type CoalesceExpr struct {
-	Args           *ast.List
-	Coalescecollid Oid
-	Coalescetype   Oid
-	Location       int
 	Xpr            ast.Node
+	Coalescetype   Oid
+	Coalescecollid Oid
+	Args           *ast.List
+	Location       int
 }
 
 func (n *CoalesceExpr) Pos() int {

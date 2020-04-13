@@ -5,11 +5,11 @@ import (
 )
 
 type AlterObjectSchemaStmt struct {
-	MissingOk  bool
-	Newschema  *string
-	Object     ast.Node
 	ObjectType ObjectType
 	Relation   *RangeVar
+	Object     ast.Node
+	Newschema  *string
+	MissingOk  bool
 }
 
 func (n *AlterObjectSchemaStmt) Pos() int {

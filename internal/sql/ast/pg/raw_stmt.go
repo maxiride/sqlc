@@ -6,8 +6,8 @@ import (
 
 type RawStmt struct {
 	Stmt         ast.Node
-	StmtLen      int
 	StmtLocation int
+	StmtLen      int
 }
 
 func (n *RawStmt) Pos() int {

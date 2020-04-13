@@ -5,11 +5,11 @@ import (
 )
 
 type SetToDefault struct {
-	Collation Oid
-	Location  int
+	Xpr       ast.Node
 	TypeId    Oid
 	TypeMod   int32
-	Xpr       ast.Node
+	Collation Oid
+	Location  int
 }
 
 func (n *SetToDefault) Pos() int {

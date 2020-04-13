@@ -5,15 +5,15 @@ import (
 )
 
 type ArrayRef struct {
-	Refarraytype    Oid
-	Refassgnexpr    ast.Node
-	Refcollid       Oid
-	Refelemtype     Oid
-	Refexpr         ast.Node
-	Reflowerindexpr *ast.List
-	Reftypmod       int32
-	Refupperindexpr *ast.List
 	Xpr             ast.Node
+	Refarraytype    Oid
+	Refelemtype     Oid
+	Reftypmod       int32
+	Refcollid       Oid
+	Refupperindexpr *ast.List
+	Reflowerindexpr *ast.List
+	Refexpr         ast.Node
+	Refassgnexpr    ast.Node
 }
 
 func (n *ArrayRef) Pos() int {

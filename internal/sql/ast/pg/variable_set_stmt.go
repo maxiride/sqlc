@@ -5,10 +5,10 @@ import (
 )
 
 type VariableSetStmt struct {
-	Args    *ast.List
-	IsLocal bool
 	Kind    VariableSetKind
 	Name    *string
+	Args    *ast.List
+	IsLocal bool
 }
 
 func (n *VariableSetStmt) Pos() int {

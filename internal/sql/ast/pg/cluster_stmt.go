@@ -1,8 +1,8 @@
 package pg
 
 type ClusterStmt struct {
-	Indexname *string
 	Relation  *RangeVar
+	Indexname *string
 	Verbose   bool
 }
 

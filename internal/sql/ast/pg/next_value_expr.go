@@ -5,9 +5,9 @@ import (
 )
 
 type NextValueExpr struct {
+	Xpr    ast.Node
 	Seqid  Oid
 	TypeId Oid
-	Xpr    ast.Node
 }
 
 func (n *NextValueExpr) Pos() int {

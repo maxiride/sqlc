@@ -1,11 +1,11 @@
 package pg
 
 type CreateCastStmt struct {
-	Context    CoercionContext
-	Func       *ObjectWithArgs
-	Inout      bool
 	Sourcetype *TypeName
 	Targettype *TypeName
+	Func       *ObjectWithArgs
+	Context    CoercionContext
+	Inout      bool
 }
 
 func (n *CreateCastStmt) Pos() int {

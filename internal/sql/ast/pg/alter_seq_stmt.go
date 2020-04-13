@@ -5,10 +5,10 @@ import (
 )
 
 type AlterSeqStmt struct {
+	Sequence    *RangeVar
+	Options     *ast.List
 	ForIdentity bool
 	MissingOk   bool
-	Options     *ast.List
-	Sequence    *RangeVar
 }
 
 func (n *AlterSeqStmt) Pos() int {

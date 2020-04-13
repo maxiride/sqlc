@@ -7,9 +7,9 @@ import (
 type OnConflictClause struct {
 	Action      OnConflictAction
 	Infer       *InferClause
-	Location    int
 	TargetList  *ast.List
 	WhereClause ast.Node
+	Location    int
 }
 
 func (n *OnConflictClause) Pos() int {

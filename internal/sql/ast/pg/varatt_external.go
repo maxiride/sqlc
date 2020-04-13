@@ -1,10 +1,10 @@
 package pg
 
 type varatt_external struct {
-	VaExtsize    int32
 	VaRawsize    int32
-	VaToastrelid Oid
+	VaExtsize    int32
 	VaValueid    Oid
+	VaToastrelid Oid
 }
 
 func (n *varatt_external) Pos() int {

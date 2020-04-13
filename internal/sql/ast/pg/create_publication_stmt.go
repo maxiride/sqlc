@@ -5,10 +5,10 @@ import (
 )
 
 type CreatePublicationStmt struct {
-	ForAllTables bool
-	Options      *ast.List
 	Pubname      *string
+	Options      *ast.List
 	Tables       *ast.List
+	ForAllTables bool
 }
 
 func (n *CreatePublicationStmt) Pos() int {

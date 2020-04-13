@@ -5,8 +5,8 @@ import (
 )
 
 type ExplainStmt struct {
-	Options *ast.List
 	Query   ast.Node
+	Options *ast.List
 }
 
 func (n *ExplainStmt) Pos() int {

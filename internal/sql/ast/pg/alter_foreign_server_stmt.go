@@ -5,10 +5,10 @@ import (
 )
 
 type AlterForeignServerStmt struct {
-	HasVersion bool
-	Options    *ast.List
 	Servername *string
 	Version    *string
+	Options    *ast.List
+	HasVersion bool
 }
 
 func (n *AlterForeignServerStmt) Pos() int {

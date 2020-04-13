@@ -1,11 +1,11 @@
 package pg
 
 type CreateTransformStmt struct {
-	Fromsql  *ObjectWithArgs
-	Lang     *string
 	Replace  bool
-	Tosql    *ObjectWithArgs
 	TypeName *TypeName
+	Lang     *string
+	Fromsql  *ObjectWithArgs
+	Tosql    *ObjectWithArgs
 }
 
 func (n *CreateTransformStmt) Pos() int {

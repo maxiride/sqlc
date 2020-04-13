@@ -6,8 +6,8 @@ import (
 
 type PartitionRangeDatum struct {
 	Kind     PartitionRangeDatumKind
-	Location int
 	Value    ast.Node
+	Location int
 }
 
 func (n *PartitionRangeDatum) Pos() int {

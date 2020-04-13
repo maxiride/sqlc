@@ -5,8 +5,8 @@ import (
 )
 
 type AlternativeSubPlan struct {
-	Subplans *ast.List
 	Xpr      ast.Node
+	Subplans *ast.List
 }
 
 func (n *AlternativeSubPlan) Pos() int {

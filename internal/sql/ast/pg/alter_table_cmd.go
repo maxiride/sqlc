@@ -5,12 +5,12 @@ import (
 )
 
 type AlterTableCmd struct {
-	Behavior  DropBehavior
-	Def       ast.Node
-	MissingOk bool
+	Subtype   AlterTableType
 	Name      *string
 	Newowner  *RoleSpec
-	Subtype   AlterTableType
+	Def       ast.Node
+	Behavior  DropBehavior
+	MissingOk bool
 }
 
 func (n *AlterTableCmd) Pos() int {

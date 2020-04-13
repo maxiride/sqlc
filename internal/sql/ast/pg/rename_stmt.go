@@ -5,14 +5,14 @@ import (
 )
 
 type RenameStmt struct {
+	RenameType   ObjectType
+	RelationType ObjectType
+	Relation     *RangeVar
+	Object       ast.Node
+	Subname      *string
+	Newname      *string
 	Behavior     DropBehavior
 	MissingOk    bool
-	Newname      *string
-	Object       ast.Node
-	Relation     *RangeVar
-	RelationType ObjectType
-	RenameType   ObjectType
-	Subname      *string
 }
 
 func (n *RenameStmt) Pos() int {

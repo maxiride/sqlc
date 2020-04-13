@@ -5,10 +5,10 @@ import (
 )
 
 type CreateSchemaStmt struct {
-	Authrole    *RoleSpec
-	IfNotExists bool
-	SchemaElts  *ast.List
 	Schemaname  *string
+	Authrole    *RoleSpec
+	SchemaElts  *ast.List
+	IfNotExists bool
 }
 
 func (n *CreateSchemaStmt) Pos() int {

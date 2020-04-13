@@ -5,9 +5,9 @@ import (
 )
 
 type ObjectWithArgs struct {
-	ArgsUnspecified bool
-	Objargs         *ast.List
 	Objname         *ast.List
+	Objargs         *ast.List
+	ArgsUnspecified bool
 }
 
 func (n *ObjectWithArgs) Pos() int {

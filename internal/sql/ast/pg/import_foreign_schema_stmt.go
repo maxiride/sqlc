@@ -5,12 +5,12 @@ import (
 )
 
 type ImportForeignSchemaStmt struct {
-	ListType     ImportForeignSchemaType
-	LocalSchema  *string
-	Options      *ast.List
-	RemoteSchema *string
 	ServerName   *string
+	RemoteSchema *string
+	LocalSchema  *string
+	ListType     ImportForeignSchemaType
 	TableList    *ast.List
+	Options      *ast.List
 }
 
 func (n *ImportForeignSchemaStmt) Pos() int {

@@ -1,10 +1,10 @@
 package pg
 
 type RowMarkClause struct {
-	PushedDown bool
 	Rti        Index
 	Strength   LockClauseStrength
 	WaitPolicy LockWaitPolicy
+	PushedDown bool
 }
 
 func (n *RowMarkClause) Pos() int {

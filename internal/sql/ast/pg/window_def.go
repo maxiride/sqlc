@@ -5,14 +5,14 @@ import (
 )
 
 type WindowDef struct {
-	EndOffset       ast.Node
-	FrameOptions    int
-	Location        int
 	Name            *string
-	OrderClause     *ast.List
-	PartitionClause *ast.List
 	Refname         *string
+	PartitionClause *ast.List
+	OrderClause     *ast.List
+	FrameOptions    int
 	StartOffset     ast.Node
+	EndOffset       ast.Node
+	Location        int
 }
 
 func (n *WindowDef) Pos() int {

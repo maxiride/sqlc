@@ -5,10 +5,10 @@ import (
 )
 
 type DefElem struct {
+	Defnamespace *string
+	Defname      *string
 	Arg          ast.Node
 	Defaction    DefElemAction
-	Defname      *string
-	Defnamespace *string
 	Location     int
 }
 

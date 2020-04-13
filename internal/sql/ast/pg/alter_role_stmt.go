@@ -5,9 +5,9 @@ import (
 )
 
 type AlterRoleStmt struct {
-	Action  int
-	Options *ast.List
 	Role    *RoleSpec
+	Options *ast.List
+	Action  int
 }
 
 func (n *AlterRoleStmt) Pos() int {

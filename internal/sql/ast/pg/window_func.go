@@ -5,17 +5,17 @@ import (
 )
 
 type WindowFunc struct {
-	Aggfilter   ast.Node
-	Args        *ast.List
-	Inputcollid Oid
-	Location    int
-	Winagg      bool
-	Wincollid   Oid
+	Xpr         ast.Node
 	Winfnoid    Oid
+	Wintype     Oid
+	Wincollid   Oid
+	Inputcollid Oid
+	Args        *ast.List
+	Aggfilter   ast.Node
 	Winref      Index
 	Winstar     bool
-	Wintype     Oid
-	Xpr         ast.Node
+	Winagg      bool
+	Location    int
 }
 
 func (n *WindowFunc) Pos() int {

@@ -5,13 +5,13 @@ import (
 )
 
 type SubLink struct {
-	Location    int
-	OperName    *ast.List
-	SubLinkId   int
-	SubLinkType SubLinkType
-	Subselect   ast.Node
-	Testexpr    ast.Node
 	Xpr         ast.Node
+	SubLinkType SubLinkType
+	SubLinkId   int
+	Testexpr    ast.Node
+	OperName    *ast.List
+	Subselect   ast.Node
+	Location    int
 }
 
 func (n *SubLink) Pos() int {

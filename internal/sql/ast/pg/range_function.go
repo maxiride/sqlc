@@ -5,12 +5,12 @@ import (
 )
 
 type RangeFunction struct {
-	Alias      *Alias
-	Coldeflist *ast.List
-	Functions  *ast.List
-	IsRowsfrom bool
 	Lateral    bool
 	Ordinality bool
+	IsRowsfrom bool
+	Functions  *ast.List
+	Alias      *Alias
+	Coldeflist *ast.List
 }
 
 func (n *RangeFunction) Pos() int {

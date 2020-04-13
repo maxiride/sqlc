@@ -5,13 +5,13 @@ import (
 )
 
 type IndexElem struct {
-	Collation     *ast.List
+	Name          *string
 	Expr          ast.Node
 	Indexcolname  *string
-	Name          *string
-	NullsOrdering SortByNulls
+	Collation     *ast.List
 	Opclass       *ast.List
 	Ordering      SortByDir
+	NullsOrdering SortByNulls
 }
 
 func (n *IndexElem) Pos() int {

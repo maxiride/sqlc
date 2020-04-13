@@ -5,12 +5,12 @@ import (
 )
 
 type CreatePolicyStmt struct {
+	PolicyName *string
+	Table      *RangeVar
 	CmdName    *string
 	Permissive bool
-	PolicyName *string
-	Qual       ast.Node
 	Roles      *ast.List
-	Table      *RangeVar
+	Qual       ast.Node
 	WithCheck  ast.Node
 }
 

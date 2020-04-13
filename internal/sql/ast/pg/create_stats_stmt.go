@@ -6,10 +6,10 @@ import (
 
 type CreateStatsStmt struct {
 	Defnames    *ast.List
-	Exprs       *ast.List
-	IfNotExists bool
-	Relations   *ast.List
 	StatTypes   *ast.List
+	Exprs       *ast.List
+	Relations   *ast.List
+	IfNotExists bool
 }
 
 func (n *CreateStatsStmt) Pos() int {

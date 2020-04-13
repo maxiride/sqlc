@@ -5,11 +5,11 @@ import (
 )
 
 type WithCheckOption struct {
-	Cascaded bool
 	Kind     WCOKind
+	Relname  *string
 	Polname  *string
 	Qual     ast.Node
-	Relname  *string
+	Cascaded bool
 }
 
 func (n *WithCheckOption) Pos() int {

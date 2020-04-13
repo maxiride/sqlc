@@ -5,10 +5,10 @@ import (
 )
 
 type InferenceElem struct {
+	Xpr          ast.Node
 	Expr         ast.Node
 	Infercollid  Oid
 	Inferopclass Oid
-	Xpr          ast.Node
 }
 
 func (n *InferenceElem) Pos() int {

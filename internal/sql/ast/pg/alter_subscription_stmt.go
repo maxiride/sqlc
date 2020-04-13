@@ -5,11 +5,11 @@ import (
 )
 
 type AlterSubscriptionStmt struct {
-	Conninfo    *string
 	Kind        AlterSubscriptionType
-	Options     *ast.List
-	Publication *ast.List
 	Subname     *string
+	Conninfo    *string
+	Publication *ast.List
+	Options     *ast.List
 }
 
 func (n *AlterSubscriptionStmt) Pos() int {

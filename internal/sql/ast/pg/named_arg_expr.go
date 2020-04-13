@@ -5,11 +5,11 @@ import (
 )
 
 type NamedArgExpr struct {
+	Xpr       ast.Node
 	Arg       ast.Node
+	Name      *string
 	Argnumber int
 	Location  int
-	Name      *string
-	Xpr       ast.Node
 }
 
 func (n *NamedArgExpr) Pos() int {

@@ -5,16 +5,16 @@ import (
 )
 
 type XmlExpr struct {
-	ArgNames  *ast.List
-	Args      *ast.List
-	Location  int
+	Xpr       ast.Node
+	Op        XmlExprOp
 	Name      *string
 	NamedArgs *ast.List
-	Op        XmlExprOp
+	ArgNames  *ast.List
+	Args      *ast.List
+	Xmloption XmlOptionType
 	Type      Oid
 	Typmod    int32
-	Xmloption XmlOptionType
-	Xpr       ast.Node
+	Location  int
 }
 
 func (n *XmlExpr) Pos() int {

@@ -5,11 +5,11 @@ import (
 )
 
 type PartitionBoundSpec struct {
-	Listdatums  *ast.List
-	Location    int
-	Lowerdatums *ast.List
 	Strategy    byte
+	Listdatums  *ast.List
+	Lowerdatums *ast.List
 	Upperdatums *ast.List
+	Location    int
 }
 
 func (n *PartitionBoundSpec) Pos() int {

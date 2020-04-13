@@ -5,13 +5,13 @@ import (
 )
 
 type RuleStmt struct {
-	Actions     *ast.List
-	Event       CmdType
-	Instead     bool
 	Relation    *RangeVar
-	Replace     bool
 	Rulename    *string
 	WhereClause ast.Node
+	Event       CmdType
+	Instead     bool
+	Actions     *ast.List
+	Replace     bool
 }
 
 func (n *RuleStmt) Pos() int {

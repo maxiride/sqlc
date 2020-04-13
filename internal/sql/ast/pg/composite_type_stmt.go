@@ -5,8 +5,8 @@ import (
 )
 
 type CompositeTypeStmt struct {
-	Coldeflist *ast.List
 	Typevar    *RangeVar
+	Coldeflist *ast.List
 }
 
 func (n *CompositeTypeStmt) Pos() int {

@@ -1,10 +1,10 @@
 package pg
 
 type ParamExternData struct {
+	Value  Datum
 	Isnull bool
 	Pflags uint16
 	Ptype  Oid
-	Value  Datum
 }
 
 func (n *ParamExternData) Pos() int {

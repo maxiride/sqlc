@@ -5,12 +5,12 @@ import (
 )
 
 type CreateOpClassStmt struct {
-	Amname       *string
-	Datatype     *TypeName
-	IsDefault    bool
-	Items        *ast.List
 	Opclassname  *ast.List
 	Opfamilyname *ast.List
+	Amname       *string
+	Datatype     *TypeName
+	Items        *ast.List
+	IsDefault    bool
 }
 
 func (n *CreateOpClassStmt) Pos() int {

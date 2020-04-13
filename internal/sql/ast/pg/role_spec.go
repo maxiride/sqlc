@@ -1,9 +1,9 @@
 package pg
 
 type RoleSpec struct {
-	Location int
-	Rolename *string
 	Roletype RoleSpecType
+	Rolename *string
+	Location int
 }
 
 func (n *RoleSpec) Pos() int {

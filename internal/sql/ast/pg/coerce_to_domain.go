@@ -5,13 +5,13 @@ import (
 )
 
 type CoerceToDomain struct {
+	Xpr            ast.Node
 	Arg            ast.Node
-	Coercionformat CoercionForm
-	Location       int
-	Resultcollid   Oid
 	Resulttype     Oid
 	Resulttypmod   int32
-	Xpr            ast.Node
+	Resultcollid   Oid
+	Coercionformat CoercionForm
+	Location       int
 }
 
 func (n *CoerceToDomain) Pos() int {

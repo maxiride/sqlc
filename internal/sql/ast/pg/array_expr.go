@@ -5,13 +5,13 @@ import (
 )
 
 type ArrayExpr struct {
-	ArrayCollid   Oid
+	Xpr           ast.Node
 	ArrayTypeid   Oid
+	ArrayCollid   Oid
 	ElementTypeid Oid
 	Elements      *ast.List
-	Location      int
 	Multidims     bool
-	Xpr           ast.Node
+	Location      int
 }
 
 func (n *ArrayExpr) Pos() int {

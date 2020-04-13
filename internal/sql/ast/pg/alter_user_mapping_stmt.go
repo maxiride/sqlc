@@ -5,9 +5,9 @@ import (
 )
 
 type AlterUserMappingStmt struct {
-	Options    *ast.List
-	Servername *string
 	User       *RoleSpec
+	Servername *string
+	Options    *ast.List
 }
 
 func (n *AlterUserMappingStmt) Pos() int {

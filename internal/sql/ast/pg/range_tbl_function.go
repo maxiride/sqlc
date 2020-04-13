@@ -5,12 +5,12 @@ import (
 )
 
 type RangeTblFunction struct {
-	Funccolcollations *ast.List
+	Funcexpr          ast.Node
 	Funccolcount      int
 	Funccolnames      *ast.List
 	Funccoltypes      *ast.List
 	Funccoltypmods    *ast.List
-	Funcexpr          ast.Node
+	Funccolcollations *ast.List
 	Funcparams        []uint32
 }
 

@@ -255,7 +255,6 @@ func main() {
 							})
 						}
 
-						sort.Slice(out.Fields, func(i, j int) bool { return out.Fields[i].Name < out.Fields[j].Name })
 						ctx.Structs = append(ctx.Structs, out)
 						if unicode.IsUpper(rune(out.Name[0])) {
 							cOut = append(cOut, out)

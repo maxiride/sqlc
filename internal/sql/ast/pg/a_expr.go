@@ -6,10 +6,10 @@ import (
 
 type A_Expr struct {
 	Kind     A_Expr_Kind
-	Lexpr    ast.Node
-	Location int
 	Name     *ast.List
+	Lexpr    ast.Node
 	Rexpr    ast.Node
+	Location int
 }
 
 func (n *A_Expr) Pos() int {

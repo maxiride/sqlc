@@ -5,11 +5,11 @@ import (
 )
 
 type FieldStore struct {
-	Arg        ast.Node
-	Fieldnums  *ast.List
-	Newvals    *ast.List
-	Resulttype Oid
 	Xpr        ast.Node
+	Arg        ast.Node
+	Newvals    *ast.List
+	Fieldnums  *ast.List
+	Resulttype Oid
 }
 
 func (n *FieldStore) Pos() int {

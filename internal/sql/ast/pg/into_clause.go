@@ -5,13 +5,13 @@ import (
 )
 
 type IntoClause struct {
-	ColNames       *ast.List
-	OnCommit       OnCommitAction
-	Options        *ast.List
 	Rel            *RangeVar
-	SkipData       bool
+	ColNames       *ast.List
+	Options        *ast.List
+	OnCommit       OnCommitAction
 	TableSpaceName *string
 	ViewQuery      ast.Node
+	SkipData       bool
 }
 
 func (n *IntoClause) Pos() int {

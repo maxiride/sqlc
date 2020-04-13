@@ -5,10 +5,10 @@ import (
 )
 
 type BooleanTest struct {
+	Xpr          ast.Node
 	Arg          ast.Node
 	Booltesttype BoolTestType
 	Location     int
-	Xpr          ast.Node
 }
 
 func (n *BooleanTest) Pos() int {

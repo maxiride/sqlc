@@ -5,11 +5,11 @@ import (
 )
 
 type AlterPublicationStmt struct {
-	ForAllTables bool
-	Options      *ast.List
 	Pubname      *string
-	TableAction  DefElemAction
+	Options      *ast.List
 	Tables       *ast.List
+	ForAllTables bool
+	TableAction  DefElemAction
 }
 
 func (n *AlterPublicationStmt) Pos() int {

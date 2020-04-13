@@ -6,8 +6,8 @@ import (
 
 type CreateAmStmt struct {
 	Amname      *string
-	Amtype      byte
 	HandlerName *ast.List
+	Amtype      byte
 }
 
 func (n *CreateAmStmt) Pos() int {

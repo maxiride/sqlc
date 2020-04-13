@@ -5,13 +5,13 @@ import (
 )
 
 type ScalarArrayOpExpr struct {
-	Args        *ast.List
-	Inputcollid Oid
-	Location    int
-	Opfuncid    Oid
-	Opno        Oid
-	UseOr       bool
 	Xpr         ast.Node
+	Opno        Oid
+	Opfuncid    Oid
+	UseOr       bool
+	Inputcollid Oid
+	Args        *ast.List
+	Location    int
 }
 
 func (n *ScalarArrayOpExpr) Pos() int {

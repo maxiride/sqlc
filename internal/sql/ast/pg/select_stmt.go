@@ -5,24 +5,24 @@ import (
 )
 
 type SelectStmt struct {
-	All            bool
 	DistinctClause *ast.List
+	IntoClause     *IntoClause
+	TargetList     *ast.List
 	FromClause     *ast.List
+	WhereClause    ast.Node
 	GroupClause    *ast.List
 	HavingClause   ast.Node
-	IntoClause     *IntoClause
-	Larg           *SelectStmt
-	LimitCount     ast.Node
-	LimitOffset    ast.Node
-	LockingClause  *ast.List
-	Op             SetOperation
-	Rarg           *SelectStmt
-	SortClause     *ast.List
-	TargetList     *ast.List
-	ValuesLists    [][]ast.Node
-	WhereClause    ast.Node
 	WindowClause   *ast.List
+	ValuesLists    [][]ast.Node
+	SortClause     *ast.List
+	LimitOffset    ast.Node
+	LimitCount     ast.Node
+	LockingClause  *ast.List
 	WithClause     *WithClause
+	Op             SetOperation
+	All            bool
+	Larg           *SelectStmt
+	Rarg           *SelectStmt
 }
 
 func (n *SelectStmt) Pos() int {

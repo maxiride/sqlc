@@ -5,8 +5,8 @@ import (
 )
 
 type DeclareCursorStmt struct {
-	Options    int
 	Portalname *string
+	Options    int
 	Query      ast.Node
 }
 

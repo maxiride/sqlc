@@ -5,13 +5,13 @@ import (
 )
 
 type InsertStmt struct {
-	Cols             *ast.List
-	OnConflictClause *OnConflictClause
-	Override         OverridingKind
 	Relation         *RangeVar
-	ReturningList    *ast.List
+	Cols             *ast.List
 	SelectStmt       ast.Node
+	OnConflictClause *OnConflictClause
+	ReturningList    *ast.List
 	WithClause       *WithClause
+	Override         OverridingKind
 }
 
 func (n *InsertStmt) Pos() int {

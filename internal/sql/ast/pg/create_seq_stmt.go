@@ -5,11 +5,11 @@ import (
 )
 
 type CreateSeqStmt struct {
-	ForIdentity bool
-	IfNotExists bool
+	Sequence    *RangeVar
 	Options     *ast.List
 	OwnerId     Oid
-	Sequence    *RangeVar
+	ForIdentity bool
+	IfNotExists bool
 }
 
 func (n *CreateSeqStmt) Pos() int {

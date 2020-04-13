@@ -5,10 +5,10 @@ import (
 )
 
 type BoolExpr struct {
-	Args     *ast.List
-	Boolop   BoolExprType
-	Location int
 	Xpr      ast.Node
+	Boolop   BoolExprType
+	Args     *ast.List
+	Location int
 }
 
 func (n *BoolExpr) Pos() int {

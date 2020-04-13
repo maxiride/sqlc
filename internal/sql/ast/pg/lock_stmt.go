@@ -5,9 +5,9 @@ import (
 )
 
 type LockStmt struct {
+	Relations *ast.List
 	Mode      int
 	Nowait    bool
-	Relations *ast.List
 }
 
 func (n *LockStmt) Pos() int {

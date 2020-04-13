@@ -5,8 +5,8 @@ import (
 )
 
 type AlterDefaultPrivilegesStmt struct {
-	Action  *GrantStmt
 	Options *ast.List
+	Action  *GrantStmt
 }
 
 func (n *AlterDefaultPrivilegesStmt) Pos() int {

@@ -5,20 +5,20 @@ import (
 )
 
 type CreateTrigStmt struct {
-	Args           *ast.List
-	Columns        *ast.List
-	Constrrel      *RangeVar
-	Deferrable     bool
-	Events         int16
-	Funcname       *ast.List
-	Initdeferred   bool
-	Isconstraint   bool
+	Trigname       *string
 	Relation       *RangeVar
+	Funcname       *ast.List
+	Args           *ast.List
 	Row            bool
 	Timing         int16
-	TransitionRels *ast.List
-	Trigname       *string
+	Events         int16
+	Columns        *ast.List
 	WhenClause     ast.Node
+	Isconstraint   bool
+	TransitionRels *ast.List
+	Deferrable     bool
+	Initdeferred   bool
+	Constrrel      *RangeVar
 }
 
 func (n *CreateTrigStmt) Pos() int {

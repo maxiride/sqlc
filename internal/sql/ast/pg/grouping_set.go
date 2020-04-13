@@ -5,8 +5,8 @@ import (
 )
 
 type GroupingSet struct {
-	Content  *ast.List
 	Kind     GroupingSetKind
+	Content  *ast.List
 	Location int
 }
 

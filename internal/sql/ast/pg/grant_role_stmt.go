@@ -5,12 +5,12 @@ import (
 )
 
 type GrantRoleStmt struct {
-	AdminOpt     bool
-	Behavior     DropBehavior
 	GrantedRoles *ast.List
 	GranteeRoles *ast.List
-	Grantor      *RoleSpec
 	IsGrant      bool
+	AdminOpt     bool
+	Grantor      *RoleSpec
+	Behavior     DropBehavior
 }
 
 func (n *GrantRoleStmt) Pos() int {

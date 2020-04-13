@@ -5,8 +5,8 @@ import (
 )
 
 type DropOwnedStmt struct {
-	Behavior DropBehavior
 	Roles    *ast.List
+	Behavior DropBehavior
 }
 
 func (n *DropOwnedStmt) Pos() int {

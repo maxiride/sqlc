@@ -5,8 +5,8 @@ import (
 )
 
 type A_Const struct {
-	Location int
 	Val      ast.Node
+	Location int
 }
 
 func (n *A_Const) Pos() int {

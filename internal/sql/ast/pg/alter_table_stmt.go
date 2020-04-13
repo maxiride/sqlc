@@ -5,10 +5,10 @@ import (
 )
 
 type AlterTableStmt struct {
-	Cmds      *ast.List
-	MissingOk bool
 	Relation  *RangeVar
+	Cmds      *ast.List
 	Relkind   ObjectType
+	MissingOk bool
 }
 
 func (n *AlterTableStmt) Pos() int {

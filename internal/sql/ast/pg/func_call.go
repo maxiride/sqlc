@@ -5,16 +5,16 @@ import (
 )
 
 type FuncCall struct {
-	AggDistinct    bool
-	AggFilter      ast.Node
-	AggOrder       *ast.List
-	AggStar        bool
-	AggWithinGroup bool
-	Args           *ast.List
-	FuncVariadic   bool
 	Funcname       *ast.List
-	Location       int
+	Args           *ast.List
+	AggOrder       *ast.List
+	AggFilter      ast.Node
+	AggWithinGroup bool
+	AggStar        bool
+	AggDistinct    bool
+	FuncVariadic   bool
 	Over           *WindowDef
+	Location       int
 }
 
 func (n *FuncCall) Pos() int {

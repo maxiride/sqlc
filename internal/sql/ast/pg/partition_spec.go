@@ -5,9 +5,9 @@ import (
 )
 
 type PartitionSpec struct {
-	Location   int
-	PartParams *ast.List
 	Strategy   *string
+	PartParams *ast.List
+	Location   int
 }
 
 func (n *PartitionSpec) Pos() int {

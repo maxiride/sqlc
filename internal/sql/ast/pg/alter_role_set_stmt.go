@@ -1,8 +1,8 @@
 package pg
 
 type AlterRoleSetStmt struct {
-	Database *string
 	Role     *RoleSpec
+	Database *string
 	Setstmt  *VariableSetStmt
 }
 

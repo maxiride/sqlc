@@ -5,13 +5,13 @@ import (
 )
 
 type CaseExpr struct {
+	Xpr        ast.Node
+	Casetype   Oid
+	Casecollid Oid
 	Arg        ast.Node
 	Args       *ast.List
-	Casecollid Oid
-	Casetype   Oid
 	Defresult  ast.Node
 	Location   int
-	Xpr        ast.Node
 }
 
 func (n *CaseExpr) Pos() int {

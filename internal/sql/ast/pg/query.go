@@ -5,42 +5,42 @@ import (
 )
 
 type Query struct {
-	CanSetTag        bool
 	CommandType      CmdType
-	ConstraintDeps   *ast.List
+	QuerySource      QuerySource
+	QueryId          uint32
+	CanSetTag        bool
+	UtilityStmt      ast.Node
+	ResultRelation   int
+	HasAggs          bool
+	HasWindowFuncs   bool
+	HasTargetSrfs    bool
+	HasSubLinks      bool
+	HasDistinctOn    bool
+	HasRecursive     bool
+	HasModifyingCte  bool
+	HasForUpdate     bool
+	HasRowSecurity   bool
 	CteList          *ast.List
-	DistinctClause   *ast.List
+	Rtable           *ast.List
+	Jointree         *FromExpr
+	TargetList       *ast.List
+	Override         OverridingKind
+	OnConflict       *OnConflictExpr
+	ReturningList    *ast.List
 	GroupClause      *ast.List
 	GroupingSets     *ast.List
-	HasAggs          bool
-	HasDistinctOn    bool
-	HasForUpdate     bool
-	HasModifyingCte  bool
-	HasRecursive     bool
-	HasRowSecurity   bool
-	HasSubLinks      bool
-	HasTargetSrfs    bool
-	HasWindowFuncs   bool
 	HavingQual       ast.Node
-	Jointree         *FromExpr
-	LimitCount       ast.Node
-	LimitOffset      ast.Node
-	OnConflict       *OnConflictExpr
-	Override         OverridingKind
-	QueryId          uint32
-	QuerySource      QuerySource
-	ResultRelation   int
-	ReturningList    *ast.List
-	RowMarks         *ast.List
-	Rtable           *ast.List
-	SetOperations    ast.Node
-	SortClause       *ast.List
-	StmtLen          int
-	StmtLocation     int
-	TargetList       *ast.List
-	UtilityStmt      ast.Node
 	WindowClause     *ast.List
+	DistinctClause   *ast.List
+	SortClause       *ast.List
+	LimitOffset      ast.Node
+	LimitCount       ast.Node
+	RowMarks         *ast.List
+	SetOperations    ast.Node
+	ConstraintDeps   *ast.List
 	WithCheckOptions *ast.List
+	StmtLocation     int
+	StmtLen          int
 }
 
 func (n *Query) Pos() int {

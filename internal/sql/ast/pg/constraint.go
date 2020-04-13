@@ -5,32 +5,32 @@ import (
 )
 
 type Constraint struct {
-	AccessMethod   *string
-	Conname        *string
 	Contype        ConstrType
-	CookedExpr     *string
+	Conname        *string
 	Deferrable     bool
-	Exclusions     *ast.List
-	FkAttrs        *ast.List
-	FkDelAction    byte
-	FkMatchtype    byte
-	FkUpdAction    byte
+	Initdeferred   bool
+	Location       int
+	IsNoInherit    bool
+	RawExpr        ast.Node
+	CookedExpr     *string
 	GeneratedWhen  byte
+	Keys           *ast.List
+	Exclusions     *ast.List
+	Options        *ast.List
 	Indexname      *string
 	Indexspace     *string
-	Initdeferred   bool
-	InitiallyValid bool
-	IsNoInherit    bool
-	Keys           *ast.List
-	Location       int
+	AccessMethod   *string
+	WhereClause    ast.Node
+	Pktable        *RangeVar
+	FkAttrs        *ast.List
+	PkAttrs        *ast.List
+	FkMatchtype    byte
+	FkUpdAction    byte
+	FkDelAction    byte
 	OldConpfeqop   *ast.List
 	OldPktableOid  Oid
-	Options        *ast.List
-	PkAttrs        *ast.List
-	Pktable        *RangeVar
-	RawExpr        ast.Node
 	SkipValidation bool
-	WhereClause    ast.Node
+	InitiallyValid bool
 }
 
 func (n *Constraint) Pos() int {

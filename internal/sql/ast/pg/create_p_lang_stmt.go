@@ -5,12 +5,12 @@ import (
 )
 
 type CreatePLangStmt struct {
+	Replace     bool
+	Plname      *string
 	Plhandler   *ast.List
 	Plinline    *ast.List
-	Plname      *string
-	Pltrusted   bool
 	Plvalidator *ast.List
-	Replace     bool
+	Pltrusted   bool
 }
 
 func (n *CreatePLangStmt) Pos() int {

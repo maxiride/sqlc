@@ -5,13 +5,13 @@ import (
 )
 
 type Param struct {
-	Location    int
-	Paramcollid Oid
-	Paramid     int
+	Xpr         ast.Node
 	Paramkind   ParamKind
+	Paramid     int
 	Paramtype   Oid
 	Paramtypmod int32
-	Xpr         ast.Node
+	Paramcollid Oid
+	Location    int
 }
 
 func (n *Param) Pos() int {

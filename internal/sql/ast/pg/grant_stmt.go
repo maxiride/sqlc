@@ -5,14 +5,14 @@ import (
 )
 
 type GrantStmt struct {
-	Behavior    DropBehavior
-	GrantOption bool
-	Grantees    *ast.List
 	IsGrant     bool
-	Objects     *ast.List
-	Objtype     GrantObjectType
-	Privileges  *ast.List
 	Targtype    GrantTargetType
+	Objtype     GrantObjectType
+	Objects     *ast.List
+	Privileges  *ast.List
+	Grantees    *ast.List
+	GrantOption bool
+	Behavior    DropBehavior
 }
 
 func (n *GrantStmt) Pos() int {

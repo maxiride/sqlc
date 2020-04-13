@@ -5,11 +5,11 @@ import (
 )
 
 type SortBy struct {
-	Location    int
 	Node        ast.Node
 	SortbyDir   SortByDir
 	SortbyNulls SortByNulls
 	UseOp       *ast.List
+	Location    int
 }
 
 func (n *SortBy) Pos() int {

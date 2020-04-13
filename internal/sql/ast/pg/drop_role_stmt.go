@@ -5,8 +5,8 @@ import (
 )
 
 type DropRoleStmt struct {
-	MissingOk bool
 	Roles     *ast.List
+	MissingOk bool
 }
 
 func (n *DropRoleStmt) Pos() int {

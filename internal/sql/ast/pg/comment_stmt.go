@@ -5,9 +5,9 @@ import (
 )
 
 type CommentStmt struct {
-	Comment *string
-	Object  ast.Node
 	Objtype ObjectType
+	Object  ast.Node
+	Comment *string
 }
 
 func (n *CommentStmt) Pos() int {

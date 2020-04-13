@@ -1,8 +1,8 @@
 package pg
 
 type DropTableSpaceStmt struct {
-	MissingOk      bool
 	Tablespacename *string
+	MissingOk      bool
 }
 
 func (n *DropTableSpaceStmt) Pos() int {
