@@ -5,14 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"go/types"
 	"io"
 	"os"
 	"strings"
 
-	"github.com/kyleconroy/sqlc/internal/pg"
-
 	yaml "gopkg.in/yaml.v3"
+
+	"github.com/kyleconroy/sqlc/internal/core"
 )
 
 const errMessageNoVersion = `The configuration file must have a version number.
@@ -74,9 +73,7 @@ const (
 	EnginePostgreSQL Engine = "postgresql"
 
 	// Experimental engines
-	EngineXLemon    Engine = "_lemon"
-	EngineXDolphin  Engine = "_dolphin"
-	EngineXElephant Engine = "_elephant"
+	EngineXLemon Engine = "_lemon"
 )
 
 type Config struct {
@@ -114,7 +111,10 @@ type SQLGen struct {
 type SQLGo struct {
 	EmitInterface       bool              `json:"emit_interface" yaml:"emit_interface"`
 	EmitJSONTags        bool              `json:"emit_json_tags" yaml:"emit_json_tags"`
-	EmitPreparedQueries bool              `json:"emit_prepared_queries" yaml:"emit_prepared_queries":`
+	EmitDBTags          bool              `json:"emit_db_tags" yaml:"emit_db_tags"`
+	EmitPreparedQueries bool              `json:"emit_prepared_queries" yaml:"emit_prepared_queries"`
+	EmitExactTableNames bool              `json:"emit_exact_table_names,omitempty" yaml:"emit_exact_table_names"`
+	EmitEmptySlices     bool              `json:"emit_empty_slices,omitempty" yaml:"emit_empty_slices"`
 	Package             string            `json:"package" yaml:"package"`
 	Out                 string            `json:"out" yaml:"out"`
 	Overrides           []Override        `json:"overrides,omitempty" yaml:"overrides"`
@@ -122,13 +122,14 @@ type SQLGo struct {
 }
 
 type SQLKotlin struct {
-	Package string `json:"package" yaml:"package"`
-	Out     string `json:"out" yaml:"out"`
+	EmitExactTableNames bool   `json:"emit_exact_table_names,omitempty" yaml:"emit_exact_table_names"`
+	Package             string `json:"package" yaml:"package"`
+	Out                 string `json:"out" yaml:"out"`
 }
 
 type Override struct {
 	// name of the golang type to use, e.g. `github.com/segmentio/ksuid.KSUID`
-	GoType string `json:"go_type" yaml:"go_type"`
+	GoType GoType `json:"go_type" yaml:"go_type"`
 
 	// fully qualified name of the Go type, e.g. `github.com/segmentio/ksuid.KSUID`
 	DBType                  string `json:"db_type" yaml:"db_type"`
@@ -138,16 +139,19 @@ type Override struct {
 	Engine Engine `json:"engine,omitempty" yaml:"engine"`
 
 	// True if the GoType should override if the maching postgres type is nullable
-	Null bool `json:"null" yaml:"null"`
+	Nullable bool `json:"nullable" yaml:"nullable"`
+	// Deprecated. Use the `nullable` property instead
+	Deprecated_Null bool `json:"null" yaml:"null"`
 
 	// fully qualified name of the column, e.g. `accounts.id`
 	Column string `json:"column" yaml:"column"`
 
-	ColumnName  string
-	Table       pg.FQN
-	GoTypeName  string
-	GoPackage   string
-	GoBasicType bool
+	ColumnName   string
+	Table        core.FQN
+	GoImportPath string
+	GoPackage    string
+	GoTypeName   string
+	GoBasicType  bool
 }
 
 func (o *Override) Parse() error {
@@ -159,6 +163,12 @@ func (o *Override) Parse() error {
 			return fmt.Errorf(`Type override configurations cannot have "db_type" and "postres_type" together. Use "db_type" alone`)
 		}
 		o.DBType = o.Deprecated_PostgresType
+	}
+
+	// validate deprecated null field
+	if o.Deprecated_Null {
+		fmt.Fprintf(os.Stderr, "WARNING: \"null\" is deprecated. Instead, use the \"nullable\" field.\n")
+		o.Nullable = true
 	}
 
 	// validate option combinations
@@ -175,68 +185,27 @@ func (o *Override) Parse() error {
 		switch len(colParts) {
 		case 2:
 			o.ColumnName = colParts[1]
-			o.Table = pg.FQN{Schema: "public", Rel: colParts[0]}
+			o.Table = core.FQN{Schema: "public", Rel: colParts[0]}
 		case 3:
 			o.ColumnName = colParts[2]
-			o.Table = pg.FQN{Schema: colParts[0], Rel: colParts[1]}
+			o.Table = core.FQN{Schema: colParts[0], Rel: colParts[1]}
 		case 4:
 			o.ColumnName = colParts[3]
-			o.Table = pg.FQN{Catalog: colParts[0], Schema: colParts[1], Rel: colParts[2]}
+			o.Table = core.FQN{Catalog: colParts[0], Schema: colParts[1], Rel: colParts[2]}
 		default:
 			return fmt.Errorf("Override `column` specifier %q is not the proper format, expected '[catalog.][schema.]colname.tablename'", o.Column)
 		}
 	}
 
 	// validate GoType
-	lastDot := strings.LastIndex(o.GoType, ".")
-	lastSlash := strings.LastIndex(o.GoType, "/")
-	typename := o.GoType
-	if lastDot == -1 && lastSlash == -1 {
-		// if the type name has no slash and no dot, validate that the type is a basic Go type
-		var found bool
-		for _, typ := range types.Typ {
-			info := typ.Info()
-			if info == 0 {
-				continue
-			}
-			if info&types.IsUntyped != 0 {
-				continue
-			}
-			if typename == typ.Name() {
-				found = true
-			}
-		}
-		if !found {
-			return fmt.Errorf("Package override `go_type` specifier %q is not a Go basic type e.g. 'string'", o.GoType)
-		}
-		o.GoBasicType = true
-	} else {
-		// assume the type lives in a Go package
-		if lastDot == -1 {
-			return fmt.Errorf("Package override `go_type` specifier %q is not the proper format, expected 'package.type', e.g. 'github.com/segmentio/ksuid.KSUID'", o.GoType)
-		}
-		if lastSlash == -1 {
-			return fmt.Errorf("Package override `go_type` specifier %q is not the proper format, expected 'package.type', e.g. 'github.com/segmentio/ksuid.KSUID'", o.GoType)
-		}
-		typename = o.GoType[lastSlash+1:]
-		if strings.HasPrefix(typename, "go-") {
-			// a package name beginning with "go-" will give syntax errors in
-			// generated code. We should do the right thing and get the actual
-			// import name, but in lieu of that, stripping the leading "go-" may get
-			// us what we want.
-			typename = typename[len("go-"):]
-		}
-		if strings.HasSuffix(typename, "-go") {
-			typename = typename[:len(typename)-len("-go")]
-		}
-		o.GoPackage = o.GoType[:lastDot]
+	parsed, err := o.GoType.Parse()
+	if err != nil {
+		return err
 	}
-	o.GoTypeName = typename
-	isPointer := o.GoType[0] == '*'
-	if isPointer {
-		o.GoPackage = o.GoPackage[1:]
-		o.GoTypeName = "*" + o.GoTypeName
-	}
+	o.GoImportPath = parsed.ImportPath
+	o.GoPackage = parsed.Package
+	o.GoTypeName = parsed.TypeName
+	o.GoBasicType = parsed.BasicType
 
 	return nil
 }

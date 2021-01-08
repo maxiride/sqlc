@@ -14,6 +14,8 @@ type Error struct {
 	Code     string
 	Message  string
 	Location int
+	Line     int
+	Column   int
 	// Hint     string
 }
 
@@ -22,7 +24,11 @@ func (e *Error) Unwrap() error {
 }
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("%s %s", e.Message, e.Err.Error())
+	if e.Err != nil {
+		return fmt.Sprintf("%s %s", e.Message, e.Err.Error())
+	} else {
+		return e.Message
+	}
 }
 
 func ColumnExists(rel, col string) *Error {
@@ -86,6 +92,14 @@ func TypeNotFound(typ string) *Error {
 		Err:     NotFound,
 		Code:    "42704",
 		Message: fmt.Sprintf("type \"%s\"", typ),
+	}
+}
+
+func FunctionNotFound(fun string) *Error {
+	return &Error{
+		Err:     NotFound,
+		Code:    "42704",
+		Message: fmt.Sprintf("function \"%s\"", fun),
 	}
 }
 

@@ -9,7 +9,7 @@ command. The format of this comment is as follows:
 
 ## Commands
 
-sqlc supports four types of query commands.
+sqlc supports five types of query commands.
 
 ### `:many`
 
@@ -62,6 +62,22 @@ WHERE id = $1;
 func (q *Queries) DeleteAuthor(ctx context.Context, id int64) error {
   _, err := q.db.ExecContext(ctx, deleteAuthor, id)
   return err
+}
+```
+
+### `:execresult`
+
+The generated method will return the [sql.Result](https://golang.org/pkg/database/sql/#Result) returned by
+[ExecContext](https://golang.org/pkg/database/sql/#DB.ExecContext).
+
+```sql
+-- name: DeleteAllAuthors :execresult
+DELETE FROM authors;
+```
+
+```go
+func (q *Queries) DeleteAllAuthors(ctx context.Context) (sql.Result, error) {
+  return q.db.ExecContext(ctx, deleteAllAuthors)
 }
 ```
 

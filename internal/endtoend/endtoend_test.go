@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"bytes"
 	"io/ioutil"
 	"os"
@@ -11,6 +10,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+
 	"github.com/kyleconroy/sqlc/internal/cmd"
 )
 
@@ -35,7 +35,7 @@ func TestExamples(t *testing.T) {
 			t.Parallel()
 			path := filepath.Join(examples, tc)
 			var stderr bytes.Buffer
-			output, err := cmd.Generate(path, &stderr)
+			output, err := cmd.Generate(cmd.Env{}, path, &stderr)
 			if err != nil {
 				t.Fatalf("sqlc generate failed: %s", stderr.String())
 			}
@@ -44,25 +44,54 @@ func TestExamples(t *testing.T) {
 	}
 }
 
-func TestReplay(t *testing.T) {
-	t.Parallel()
-
-	files, err := ioutil.ReadDir("testdata")
+func BenchmarkExamples(b *testing.B) {
+	examples, err := filepath.Abs(filepath.Join("..", "..", "examples"))
 	if err != nil {
-		t.Fatal(err)
+		b.Fatal(err)
 	}
-
+	files, err := ioutil.ReadDir(examples)
+	if err != nil {
+		b.Fatal(err)
+	}
 	for _, replay := range files {
 		if !replay.IsDir() {
 			continue
 		}
 		tc := replay.Name()
+		b.Run(tc, func(b *testing.B) {
+			path := filepath.Join(examples, tc)
+			for i := 0; i < b.N; i++ {
+				var stderr bytes.Buffer
+				cmd.Generate(cmd.Env{}, path, &stderr)
+			}
+		})
+	}
+}
+
+func TestReplay(t *testing.T) {
+	t.Parallel()
+	var dirs []string
+	err := filepath.Walk("testdata", func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.Name() == "sqlc.json" || info.Name() == "sqlc.yaml" {
+			dirs = append(dirs, filepath.Dir(path))
+			return filepath.SkipDir
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, replay := range dirs {
+		tc := replay
 		t.Run(tc, func(t *testing.T) {
 			t.Parallel()
-			path, _ := filepath.Abs(filepath.Join("testdata", tc))
+			path, _ := filepath.Abs(tc)
 			var stderr bytes.Buffer
 			expected := expectedStderr(t, path)
-			output, err := cmd.Generate(path, &stderr)
+			output, err := cmd.Generate(cmd.Env{}, path, &stderr)
 			if len(expected) == 0 && err != nil {
 				t.Fatalf("sqlc generate failed: %s", stderr.String())
 			}
@@ -86,11 +115,10 @@ func cmpDirectory(t *testing.T, dir string, actual map[string]string) {
 		if !strings.HasSuffix(path, ".go") && !strings.HasSuffix(path, ".kt") {
 			return nil
 		}
-		if strings.HasSuffix(path, "_test.go") || strings.Contains(path, "src/test/") {
+		if strings.Contains(path, "/kotlin/build") {
 			return nil
 		}
-		// TODO(mightyguava): Remove this after sqlc-kotlin-runtime is published to Maven.
-		if strings.HasSuffix(path, "Query.kt") {
+		if strings.HasSuffix(path, "_test.go") || strings.Contains(path, "src/test/") {
 			return nil
 		}
 		blob, err := ioutil.ReadFile(path)
@@ -124,37 +152,40 @@ func cmpDirectory(t *testing.T, dir string, actual map[string]string) {
 
 func expectedStderr(t *testing.T, dir string) string {
 	t.Helper()
-	files, err := ioutil.ReadDir(dir)
-	if err != nil {
-		t.Fatal(err)
-	}
-	stderr := ""
-	for _, file := range files {
-		if file.IsDir() {
-			continue
-		}
-		if !strings.HasSuffix(file.Name(), ".sql") {
-			continue
-		}
-		rd, err := os.Open(filepath.Join(dir, file.Name()))
+	path := filepath.Join(dir, "stderr.txt")
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		blob, err := ioutil.ReadFile(path)
 		if err != nil {
-			t.Fatalf("could not open %s: %v", file.Name(), err)
-		}
-		scanner := bufio.NewScanner(rd)
-		capture := false
-		for scanner.Scan() {
-			text := scanner.Text()
-			if text == "-- stderr" {
-				capture = true
-				continue
-			}
-			if capture == true && strings.HasPrefix(text, "--") {
-				stderr += strings.TrimPrefix(text, "-- ") + "\n"
-			}
-		}
-		if err := scanner.Err(); err != nil {
 			t.Fatal(err)
 		}
+		return string(blob)
 	}
-	return stderr
+	return ""
+}
+
+func BenchmarkReplay(b *testing.B) {
+	var dirs []string
+	err := filepath.Walk("testdata", func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.Name() == "sqlc.json" || info.Name() == "sqlc.yaml" {
+			dirs = append(dirs, filepath.Dir(path))
+			return filepath.SkipDir
+		}
+		return nil
+	})
+	if err != nil {
+		b.Fatal(err)
+	}
+	for _, replay := range dirs {
+		tc := replay
+		b.Run(tc, func(b *testing.B) {
+			path, _ := filepath.Abs(tc)
+			for i := 0; i < b.N; i++ {
+				var stderr bytes.Buffer
+				cmd.Generate(cmd.Env{}, path, &stderr)
+			}
+		})
+	}
 }

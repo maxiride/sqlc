@@ -7,37 +7,37 @@ import (
 	"time"
 )
 
-type BookTypeType string
+type BooksBookType string
 
 const (
-	FICTION    BookTypeType = "FICTION"
-	NONFICTION BookTypeType = "NONFICTION"
+	BooksBookTypeFICTION    BooksBookType = "FICTION"
+	BooksBookTypeNONFICTION BooksBookType = "NONFICTION"
 )
 
-func (e *BookTypeType) Scan(src interface{}) error {
+func (e *BooksBookType) Scan(src interface{}) error {
 	switch s := src.(type) {
 	case []byte:
-		*e = BookTypeType(s)
+		*e = BooksBookType(s)
 	case string:
-		*e = BookTypeType(s)
+		*e = BooksBookType(s)
 	default:
-		return fmt.Errorf("unsupported scan type for BookTypeType: %T", src)
+		return fmt.Errorf("unsupported scan type for BooksBookType: %T", src)
 	}
 	return nil
 }
 
 type Author struct {
-	AuthorID int
+	AuthorID int32
 	Name     string
 }
 
 type Book struct {
-	BookID    int
-	AuthorID  int
+	BookID    int32
+	AuthorID  int32
 	Isbn      string
-	BookType  BookTypeType
+	BookType  BooksBookType
 	Title     string
-	Yr        int
+	Yr        int32
 	Available time.Time
 	Tags      string
 }

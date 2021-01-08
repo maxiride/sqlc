@@ -1,27 +1,29 @@
-// +build exp
-
 package compiler
 
 import (
+	"errors"
 	"fmt"
 	"io"
-	"os"
+	"io/ioutil"
+	"path/filepath"
 	"regexp"
-	"sort"
 	"strings"
 
-	"github.com/kyleconroy/sqlc/internal/config"
-	"github.com/kyleconroy/sqlc/internal/dinosql"
-	"github.com/kyleconroy/sqlc/internal/dolphin"
-	"github.com/kyleconroy/sqlc/internal/pg"
-	"github.com/kyleconroy/sqlc/internal/postgresql"
+	"github.com/kyleconroy/sqlc/internal/metadata"
+	"github.com/kyleconroy/sqlc/internal/migrations"
+	"github.com/kyleconroy/sqlc/internal/multierr"
+	"github.com/kyleconroy/sqlc/internal/opts"
 	"github.com/kyleconroy/sqlc/internal/sql/ast"
 	"github.com/kyleconroy/sqlc/internal/sql/catalog"
-	"github.com/kyleconroy/sqlc/internal/sqlite"
+	"github.com/kyleconroy/sqlc/internal/sql/sqlerr"
+	"github.com/kyleconroy/sqlc/internal/sql/sqlpath"
 )
 
+// TODO: Rename this interface Engine
 type Parser interface {
 	Parse(io.Reader) ([]ast.Statement, error)
+	CommentSyntax() metadata.CommentSyntax
+	IsReservedKeyword(string) bool
 }
 
 // copied over from gen.go
@@ -52,93 +54,92 @@ func enumValueName(value string) string {
 }
 
 // end copypasta
-
-func Run(conf config.SQL, combo config.CombinedSettings) (*Result, error) {
-	var c *catalog.Catalog
-	var p Parser
-
-	switch conf.Engine {
-	case config.EngineXLemon:
-		p = sqlite.NewParser()
-		c = catalog.New("main")
-	case config.EngineXDolphin:
-		p = dolphin.NewParser()
-		c = catalog.New("public") // TODO: What is the default database for MySQL?
-	case config.EngineXElephant:
-		p = postgresql.NewParser()
-		c = postgresql.NewCatalog()
-	default:
-		return nil, fmt.Errorf("unknown engine: %s", conf.Engine)
+func parseCatalog(p Parser, c *catalog.Catalog, schemas []string) error {
+	files, err := sqlpath.Glob(schemas)
+	if err != nil {
+		return err
 	}
-
-	blobs := make([]io.Reader, 0, len(conf.Schema))
-	for _, s := range conf.Schema {
-		b, err := os.Open(s)
+	merr := multierr.New()
+	for _, filename := range files {
+		blob, err := ioutil.ReadFile(filename)
 		if err != nil {
-			return nil, err
+			merr.Add(filename, "", 0, err)
+			continue
 		}
-		blobs = append(blobs, b)
+		contents := migrations.RemoveRollbackStatements(string(blob))
+		stmts, err := p.Parse(strings.NewReader(contents))
+		if err != nil {
+			merr.Add(filename, contents, 0, err)
+			continue
+		}
+		for i := range stmts {
+			if err := c.Update(stmts[i]); err != nil {
+				merr.Add(filename, contents, stmts[i].Pos(), err)
+				continue
+			}
+		}
 	}
-	rd := io.MultiReader(blobs...)
+	if len(merr.Errs()) > 0 {
+		return merr
+	}
+	return nil
+}
 
-	stmts, err := p.Parse(rd)
+func (c *Compiler) parseQueries(o opts.Parser) (*Result, error) {
+	var q []*Query
+	merr := multierr.New()
+	set := map[string]struct{}{}
+	files, err := sqlpath.Glob(c.conf.Queries)
 	if err != nil {
 		return nil, err
 	}
-
-	if err := c.Build(stmts); err != nil {
-		return nil, err
-	}
-
-	var structs []dinosql.GoStruct
-	var enums []dinosql.GoEnum
-	for _, schema := range c.Schemas {
-		for _, table := range schema.Tables {
-			s := dinosql.GoStruct{
-				Table:   pg.FQN{Schema: schema.Name, Rel: table.Rel.Name},
-				Name:    strings.Title(table.Rel.Name),
-				Comment: table.Comment,
-			}
-			for _, col := range table.Columns {
-				s.Fields = append(s.Fields, dinosql.GoField{
-					Name:    structName(col.Name),
-					Type:    "string",
-					Tags:    map[string]string{"json:": col.Name},
-					Comment: col.Comment,
-				})
-			}
-			structs = append(structs, s)
+	for _, filename := range files {
+		blob, err := ioutil.ReadFile(filename)
+		if err != nil {
+			merr.Add(filename, "", 0, err)
+			continue
 		}
-		for _, typ := range schema.Types {
-			switch t := typ.(type) {
-			case *catalog.Enum:
-				var name string
-				if schema.Name == c.DefaultSchema {
-					name = t.Name
-				} else {
-					name = schema.Name + "_" + t.Name
+		src := string(blob)
+		stmts, err := c.parser.Parse(strings.NewReader(src))
+		if err != nil {
+			merr.Add(filename, src, 0, err)
+			continue
+		}
+		for _, stmt := range stmts {
+			query, err := c.parseQuery(stmt.Raw, src, o)
+			if err == ErrUnsupportedStatementType {
+				continue
+			}
+			if err != nil {
+				var e *sqlerr.Error
+				loc := stmt.Raw.Pos()
+				if errors.As(err, &e) && e.Location != 0 {
+					loc = e.Location
 				}
-				e := dinosql.GoEnum{
-					Name:    structName(name),
-					Comment: t.Comment,
+				merr.Add(filename, src, loc, err)
+				continue
+			}
+			if query.Name != "" {
+				if _, exists := set[query.Name]; exists {
+					merr.Add(filename, src, stmt.Raw.Pos(), fmt.Errorf("duplicate query name: %s", query.Name))
+					continue
 				}
-				for _, v := range t.Vals {
-					e.Constants = append(e.Constants, dinosql.GoConstant{
-						Name:  e.Name + enumValueName(v),
-						Value: v,
-						Type:  e.Name,
-					})
-				}
-				enums = append(enums, e)
+				set[query.Name] = struct{}{}
+			}
+			query.Filename = filepath.Base(filename)
+			if query != nil {
+				q = append(q, query)
 			}
 		}
 	}
-
-	if len(structs) > 0 {
-		sort.Slice(structs, func(i, j int) bool { return structs[i].Name < structs[j].Name })
+	if len(merr.Errs()) > 0 {
+		return nil, merr
 	}
-	if len(enums) > 0 {
-		sort.Slice(enums, func(i, j int) bool { return enums[i].Name < enums[j].Name })
+	if len(q) == 0 {
+		return nil, fmt.Errorf("no queries contained in paths %s", strings.Join(c.conf.Queries, ","))
 	}
-	return &Result{structs: structs, enums: enums}, nil
+	return &Result{
+		Catalog: c.catalog,
+		Queries: q,
+	}, nil
 }

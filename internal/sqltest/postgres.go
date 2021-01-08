@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kyleconroy/sqlc/internal/dinosql"
+	"github.com/kyleconroy/sqlc/internal/sql/sqlpath"
 
 	_ "github.com/lib/pq"
 )
@@ -66,10 +66,8 @@ func PostgreSQL(t *testing.T, migrations []string) (*sql.DB, func()) {
 		t.Fatal(err)
 	}
 
-	schema := "sqltest_" + id()
-
 	// For each test, pick a new schema name at random.
-	// `foo` is used here only as an example
+	schema := "sqltest_postgresql_" + id()
 	if _, err := db.Exec("CREATE SCHEMA " + schema); err != nil {
 		t.Fatal(err)
 	}
@@ -79,7 +77,7 @@ func PostgreSQL(t *testing.T, migrations []string) (*sql.DB, func()) {
 		t.Fatal(err)
 	}
 
-	files, err := dinosql.ReadSQLFiles(migrations)
+	files, err := sqlpath.Glob(migrations)
 	if err != nil {
 		t.Fatal(err)
 	}

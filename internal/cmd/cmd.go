@@ -46,7 +46,7 @@ var versionCmd = &cobra.Command{
 		if version == "" {
 			// When no version is set, return the next bug fix version
 			// after the most recent tag
-			fmt.Printf("%s\n", "v1.2.1-devel")
+			fmt.Printf("%s\n", "v1.6.1-devel")
 		} else {
 			fmt.Printf("%s\n", version)
 		}
@@ -68,6 +68,13 @@ var initCmd = &cobra.Command{
 	},
 }
 
+type Env struct {
+}
+
+func ParseEnv() Env {
+	return Env{}
+}
+
 var genCmd = &cobra.Command{
 	Use:   "generate",
 	Short: "Generate Go code from SQL",
@@ -79,7 +86,7 @@ var genCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		output, err := Generate(dir, stderr)
+		output, err := Generate(ParseEnv(), dir, stderr)
 		if err != nil {
 			os.Exit(1)
 		}
@@ -104,7 +111,7 @@ var checkCmd = &cobra.Command{
 			fmt.Fprintln(stderr, "error parsing sqlc.json: file does not exist")
 			os.Exit(1)
 		}
-		if _, err := Generate(dir, stderr); err != nil {
+		if _, err := Generate(Env{}, dir, stderr); err != nil {
 			os.Exit(1)
 		}
 		return nil

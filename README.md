@@ -23,7 +23,7 @@ you ever:
 
 - Mixed up the order of the arguments when invoking the query so they didn't
   match up with the SQL text
-- Updated the name of a column in one query both not another
+- Updated the name of a column in one query but not another
 - Mistyped the name of a column in a query
 - Changed the number of arguments in a query but forgot to pass the additional
   values
@@ -267,38 +267,45 @@ Use "sqlc [command] --help" for more information about a command.
 
 ## Settings
 
-The `sqlc` tool is configured via a `sqlc.yaml` file. This file must be
+The `sqlc` tool is configured via a `sqlc.yaml` or `sqlc.json` file. This file must be
 in the directory where the `sqlc` command is run.
 
 ```yaml
 version: "1"
 packages:
   - name: "db"
-    emit_json_tags: true
-    emit_prepared_queries: false
-    emit_interface: true
     path: "internal/db"
     queries: "./sql/query/"
     schema: "./sql/schema/"
+    engine: "postgresql"
+    emit_json_tags: true
+    emit_prepared_queries: true
+    emit_interface: false
+    emit_exact_table_names: false
+    emit_empty_slices: false
 ```
 
 Each package document has the following keys:
 - `name`:
   - The package name to use for the generated code. Defaults to `path` basename
+- `path`:
+  - Output directory for generated code
+- `queries`:
+  - Directory of SQL queries or path to single SQL file; or a list of paths
+- `schema`:
+  - Directory of SQL migrations or path to single SQL file; or a list of paths
+- `engine`:
+  - Either `postgresql` or `mysql`. Defaults to `postgresql`. MySQL support is experimental
 - `emit_json_tags`:
   - If true, add JSON tags to generated structs. Defaults to `false`.
 - `emit_prepared_queries`:
   - If true, include support for prepared queries. Defaults to `false`.
 - `emit_interface`:
   - If true, output a `Querier` interface in the generated package. Defaults to `false`.
-- `path`:
-  - Output directory for generated code
-- `queries`:
-  - Directory of SQL queries or path to single SQL file
-- `schema`:
-  - Directory of SQL migrations or path to single SQL file
-- `engine`:
-  - Either `postgresql` or `mysql`. Defaults to `postgresql`. MySQL support is experimental
+- `emit_exact_table_names`:
+  - If true, struct names will mirror table names. Otherwise, sqlc attempts to singularize plural table names. Defaults to `false`.
+- `emit_empty_slices`:
+  - If true, slices returned by `:many` queries will be empty instead of `nil`. Defaults to `false`.
 
 ### Type Overrides
 
@@ -320,10 +327,10 @@ overrides:
 
 Each override document has the following keys:
 - `db_type`:
-  - The PostgreSQL type to override. Find the full list of supported types in [gen.go](https://github.com/kyleconroy/sqlc/blob/master/internal/dinosql/gen.go#L438).
+  - The PostgreSQL type to override. Find the full list of supported types in [postgresql_type.go](https://github.com/kyleconroy/sqlc/blob/master/internal/codegen/golang/postgresql_type.go#L12).
 - `go_type`:
   - A fully qualified name to a Go type to use in the generated code.
-- `null`:
+- `nullable`:
   - If true, use this type when a column is nullable. Defaults to `false`.
 
 ### Per-Column Type Overrides
@@ -382,7 +389,7 @@ rename:
 ### macOS
 
 ```
-brew install kyleconroy/sqlc/sqlc
+brew install sqlc
 ```
 
 ### Ubuntu
@@ -427,11 +434,11 @@ sqlc currently only supports PostgreSQL / Go. MySQL and Kotlin support have
 been merged, but both are marked as experimental. SQLite and TypeScript support
 are planned.
 
-| Language     | PostgreSQL       | MySQL            | SQLite           |
-| ------------ |:----------------:|:----------------:|:----------------:|
-| Go           |:white_check_mark:|:warning:         |:timer_clock:     |
-| Kotlin       |:warning:         |:timer_clock:     |:timer_clock:     |
-| TypeScript   |:timer_clock:     |:timer_clock:     |:timer_clock:     |
+| Language     | PostgreSQL        | MySQL             |
+| ------------ | :---------------- | :---------------- |
+| Go           | :white_check_mark: - Stable | :bug: - Beta |
+| TypeScript   | :timer_clock: - Planned | :timer_clock: - Planned |
+| Kotlin       | :warning: - Experimental | |
 
 If you'd like to add another database or language, we'd welcome a contribution.
 
@@ -444,7 +451,8 @@ sqlc development is funded by our generous sponsors.
   - [ngrok](https://ngrok.com)
   - [Weave](https://www.getweave.com/)
 - Individuals
-  - [CyberAx](https://github.com/Cyberax)
+  - [Alex Besogonov](https://github.com/Cyberax)
+  - [Myles McDonnell](https://github.com/myles-mcdonnell)
 
 If you use sqlc at your company, please consider [becoming a
 sponsor](https://github.com/sponsors/kyleconroy) today.
@@ -463,16 +471,27 @@ go build -o ~/go/bin/sqlc-dev ./cmd/sqlc
 
 ### Running Tests
 
-To run the tests, include the `exp` tag. Without this tag, a few tests will
-fail.
-
 ```
-go test --tags=exp ./...
+go test ./...
 ```
 
-To run the tests in the examples folder, a running PostgreSQL instance is
-required. The tests use the following environment variables to connect to the
-database:
+To run the tests in the examples folder, use the `examples` tag.
+
+```
+go test --tags=examples ./...
+```
+
+These tests require locally-running database instances. Run these databases
+using [Docker Compose](https://docs.docker.com/compose/).
+
+```
+docker-compose up -d
+```
+
+The tests use the following environment variables to connect to the
+database
+
+#### For PostgreSQL
 
 ```
 Variable     Default Value
@@ -484,8 +503,16 @@ PG_PASSWORD  mysecretpassword
 PG_DATABASE  dinotest
 ```
 
+#### For MySQL
+
 ```
-go test --tags=examples,exp ./...
+Variable     Default Value
+-------------------------
+MYSQL_HOST      127.0.0.1
+MYSQL_PORT      3306
+MYSQL_USER      root
+MYSQL_ROOT_PASSWORD  mysecretpassword
+MYSQL_DATABASE  dinotest
 ```
 
 ### Regenerate expected test output

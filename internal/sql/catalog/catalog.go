@@ -1,6 +1,8 @@
 package catalog
 
 import (
+	"strings"
+
 	"github.com/kyleconroy/sqlc/internal/sql/ast"
 	"github.com/kyleconroy/sqlc/internal/sql/sqlerr"
 )
@@ -16,11 +18,15 @@ func stringSlice(list *ast.List) []string {
 }
 
 type Catalog struct {
-	Name    string
-	Schemas []*Schema
-	Comment string
-
+	Comment       string
 	DefaultSchema string
+	Name          string
+	Schemas       []*Schema
+	SearchPath    []string
+	LoadExtension func(string) *Schema
+
+	// TODO: un-export
+	Extensions map[string]struct{}
 }
 
 func (c *Catalog) getSchema(name string) (*Schema, error) {
@@ -91,7 +97,17 @@ func sameType(a, b *ast.TypeName) bool {
 	if a.Catalog != b.Catalog {
 		return false
 	}
-	if a.Schema != b.Schema {
+	// The pg_catalog schema is searched by default, so take that into
+	// account when comparing schemas
+	aSchema := a.Schema
+	bSchema := b.Schema
+	if aSchema == "pg_catalog" {
+		aSchema = ""
+	}
+	if bSchema == "pg_catalog" {
+		bSchema = ""
+	}
+	if aSchema != bSchema {
 		return false
 	}
 	if a.Name != b.Name {
@@ -102,14 +118,16 @@ func sameType(a, b *ast.TypeName) bool {
 
 func (s *Schema) getFunc(rel *ast.FuncName, tns []*ast.TypeName) (*Function, int, error) {
 	for i := range s.Funcs {
-		if s.Funcs[i].Name != rel.Name {
+		if strings.ToLower(s.Funcs[i].Name) != strings.ToLower(rel.Name) {
 			continue
 		}
-		if len(s.Funcs[i].Args) != len(tns) {
+
+		args := s.Funcs[i].InArgs()
+		if len(args) != len(tns) {
 			continue
 		}
 		found := true
-		for j := range s.Funcs[i].Args {
+		for j := range args {
 			if !sameType(s.Funcs[i].Args[j].Type, tns[j]) {
 				found = false
 				break
@@ -125,11 +143,13 @@ func (s *Schema) getFunc(rel *ast.FuncName, tns []*ast.TypeName) (*Function, int
 
 func (s *Schema) getFuncByName(rel *ast.FuncName) (*Function, int, error) {
 	idx := -1
+	name := strings.ToLower(rel.Name)
 	for i := range s.Funcs {
-		if s.Funcs[i].Name == rel.Name && idx >= 0 {
+		lowered := strings.ToLower(s.Funcs[i].Name)
+		if lowered == name && idx >= 0 {
 			return nil, -1, sqlerr.FunctionNotUnique(rel.Name)
 		}
-		if s.Funcs[i].Name == rel.Name {
+		if lowered == name {
 			idx = i
 		}
 	}
@@ -171,6 +191,7 @@ type Column struct {
 	Name      string
 	Type      ast.TypeName
 	IsNotNull bool
+	IsArray   bool
 	Comment   string
 }
 
@@ -193,75 +214,131 @@ func (e *Enum) SetComment(c string) {
 func (e *Enum) isType() {
 }
 
+type CompositeType struct {
+	Name    string
+	Comment string
+}
+
+func (ct *CompositeType) isType() {
+}
+
+func (ct *CompositeType) SetComment(c string) {
+	ct.Comment = c
+}
+
 type Function struct {
 	Name       string
 	Args       []*Argument
 	ReturnType *ast.TypeName
 	Comment    string
+	Desc       string
+}
+
+func (f *Function) InArgs() []*Argument {
+	var args []*Argument
+	for _, a := range f.Args {
+		switch a.Mode {
+		case ast.FuncParamTable, ast.FuncParamOut:
+			continue
+		default:
+			args = append(args, a)
+		}
+	}
+	return args
 }
 
 type Argument struct {
 	Name       string
 	Type       *ast.TypeName
 	HasDefault bool
+	Mode       ast.FuncParamMode
 }
 
 func New(def string) *Catalog {
 	return &Catalog{
 		DefaultSchema: def,
 		Schemas: []*Schema{
-			&Schema{Name: def},
+			{Name: def},
 		},
+		Extensions: map[string]struct{}{},
 	}
 }
 
 func (c *Catalog) Build(stmts []ast.Statement) error {
 	for i := range stmts {
-		if stmts[i].Raw == nil {
-			continue
-		}
-		var err error
-		switch n := stmts[i].Raw.Stmt.(type) {
-		case *ast.AlterTableStmt:
-			err = c.alterTable(n)
-		case *ast.AlterTableSetSchemaStmt:
-			err = c.alterTableSetSchema(n)
-		case *ast.AlterTypeAddValueStmt:
-			err = c.alterTypeAddValue(n)
-		case *ast.AlterTypeRenameValueStmt:
-			err = c.alterTypeRenameValue(n)
-		case *ast.CommentOnColumnStmt:
-			err = c.commentOnColumn(n)
-		case *ast.CommentOnSchemaStmt:
-			err = c.commentOnSchema(n)
-		case *ast.CommentOnTableStmt:
-			err = c.commentOnTable(n)
-		case *ast.CommentOnTypeStmt:
-			err = c.commentOnType(n)
-		case *ast.CreateEnumStmt:
-			err = c.createEnum(n)
-		case *ast.CreateFunctionStmt:
-			err = c.createFunction(n)
-		case *ast.CreateSchemaStmt:
-			err = c.createSchema(n)
-		case *ast.CreateTableStmt:
-			err = c.createTable(n)
-		case *ast.DropFunctionStmt:
-			err = c.dropFunction(n)
-		case *ast.DropSchemaStmt:
-			err = c.dropSchema(n)
-		case *ast.DropTableStmt:
-			err = c.dropTable(n)
-		case *ast.DropTypeStmt:
-			err = c.dropType(n)
-		case *ast.RenameColumnStmt:
-			err = c.renameColumn(n)
-		case *ast.RenameTableStmt:
-			err = c.renameTable(n)
-		}
-		if err != nil {
+		if err := c.Update(stmts[i]); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func (c *Catalog) Update(stmt ast.Statement) error {
+	if stmt.Raw == nil {
+		return nil
+	}
+	var err error
+	switch n := stmt.Raw.Stmt.(type) {
+	case *ast.AlterTableStmt:
+		err = c.alterTable(n)
+
+	case *ast.AlterTableSetSchemaStmt:
+		err = c.alterTableSetSchema(n)
+
+	case *ast.AlterTypeAddValueStmt:
+		err = c.alterTypeAddValue(n)
+
+	case *ast.AlterTypeRenameValueStmt:
+		err = c.alterTypeRenameValue(n)
+
+	case *ast.CommentOnColumnStmt:
+		err = c.commentOnColumn(n)
+
+	case *ast.CommentOnSchemaStmt:
+		err = c.commentOnSchema(n)
+
+	case *ast.CommentOnTableStmt:
+		err = c.commentOnTable(n)
+
+	case *ast.CommentOnTypeStmt:
+		err = c.commentOnType(n)
+
+	case *ast.CompositeTypeStmt:
+		err = c.createCompositeType(n)
+
+	case *ast.CreateEnumStmt:
+		err = c.createEnum(n)
+
+	case *ast.CreateExtensionStmt:
+		err = c.createExtension(n)
+
+	case *ast.CreateFunctionStmt:
+		err = c.createFunction(n)
+
+	case *ast.CreateSchemaStmt:
+		err = c.createSchema(n)
+
+	case *ast.CreateTableStmt:
+		err = c.createTable(n)
+
+	case *ast.DropFunctionStmt:
+		err = c.dropFunction(n)
+
+	case *ast.DropSchemaStmt:
+		err = c.dropSchema(n)
+
+	case *ast.DropTableStmt:
+		err = c.dropTable(n)
+
+	case *ast.DropTypeStmt:
+		err = c.dropType(n)
+
+	case *ast.RenameColumnStmt:
+		err = c.renameColumn(n)
+
+	case *ast.RenameTableStmt:
+		err = c.renameTable(n)
+
+	}
+	return err
 }
